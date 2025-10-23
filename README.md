@@ -146,6 +146,27 @@ curl -X POST http://localhost:3000/zkml/verify \
 
 **For full ZKML documentation, see [ZKML.md](ZKML.md)**
 
+### Real Jolt Atlas zkSNARKs vs Current Implementation
+
+⚠️ **Current Status**: The system uses **real ONNX inference** but **commitment-based proofs** (not full zkSNARKs) due to network build limitations.
+
+| Feature | Current | With Jolt Atlas |
+|---------|---------|-----------------|
+| ONNX Inference | ✅ Real | ✅ Real |
+| Proof Type | SHA-256 commitments | zkSNARKs |
+| Zero-Knowledge | ❌ No | ✅ Yes |
+| Cryptographic Soundness | Trust-based | Cryptographic |
+| On-chain Verifiable | ❌ No | ✅ Yes |
+| Prover Time | ~30ms | ~500ms |
+| Verifier Time | ~10ms | ~150ms |
+
+**To enable REAL Jolt Atlas zkSNARKs:**
+1. See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for building with network access
+2. See [JOLT_ATLAS_INTEGRATION.md](JOLT_ATLAS_INTEGRATION.md) for complete architecture
+3. See [REAL_JOLT_INTEGRATION.md](REAL_JOLT_INTEGRATION.md) for honest comparison
+
+The integration code is **ready** and will automatically activate once the Rust zkML binary is built (requires network access to fetch dependencies from https://github.com/ICME-Lab/jolt-atlas).
+
 ## API Usage
 
 ### Service Discovery

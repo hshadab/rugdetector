@@ -1,0 +1,157 @@
+{
+  "name": "RugDetector",
+  "version": "1.0.0",
+  "description": "AI-powered rug pull detector for smart contracts. Analyzes 60+ blockchain features to assess risk using machine learning.",
+  "provider": {
+    "name": "hshadab",
+    "url": "https://github.com/hshadab/rugdetector",
+    "support_email": "support@rugdetector.example.com"
+  },
+  "api": {
+    "type": "rest",
+    "base_url": "https://rugdetector.example.com",
+    "endpoints": [
+      {
+        "path": "/check",
+        "method": "POST",
+        "description": "Analyze a smart contract for rug pull risk",
+        "parameters": {
+          "payment_id": {
+            "type": "string",
+            "required": true,
+            "description": "X402 payment transaction ID (format: tx_0x...)",
+            "example": "tx_0xabcdef1234567890..."
+          },
+          "contract_address": {
+            "type": "string",
+            "required": true,
+            "pattern": "^0x[a-fA-F0-9]{40}$",
+            "description": "Ethereum-compatible contract address to analyze",
+            "example": "0x1234567890abcdef1234567890abcdef12345678"
+          },
+          "blockchain": {
+            "type": "string",
+            "required": false,
+            "default": "ethereum",
+            "enum": ["ethereum", "bsc", "polygon"],
+            "description": "Blockchain network where the contract is deployed"
+          }
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "description": "Indicates if the request was successful"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "riskScore": {
+                  "type": "number",
+                  "description": "Risk score from 0.0 (safe) to 1.0 (dangerous)",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "riskCategory": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"],
+                  "description": "Risk classification"
+                },
+                "confidence": {
+                  "type": "number",
+                  "description": "Model confidence in the prediction",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "features": {
+                  "type": "object",
+                  "description": "All 60 extracted blockchain features used for analysis"
+                },
+                "recommendation": {
+                  "type": "string",
+                  "description": "Human-readable recommendation based on risk level"
+                },
+                "analysis_timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "ISO 8601 timestamp of analysis"
+                }
+              }
+            }
+          }
+        },
+        "errors": [
+          {
+            "code": 400,
+            "description": "Bad request - missing required fields or invalid format"
+          },
+          {
+            "code": 402,
+            "description": "Payment required - payment verification failed"
+          },
+          {
+            "code": 422,
+            "description": "Unprocessable entity - invalid contract address or blockchain"
+          },
+          {
+            "code": 500,
+            "description": "Internal server error - feature extraction or analysis failed"
+          }
+        ]
+      }
+    ]
+  },
+  "payment": {
+    "protocol": "x402",
+    "version": "1.0",
+    "supported_tokens": [
+      {
+        "symbol": "USDC",
+        "name": "USD Coin",
+        "blockchain": "base",
+        "chain_id": 8453,
+        "contract_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "decimals": 6
+      }
+    ],
+    "pricing": [
+      {
+        "endpoint": "/check",
+        "amount": "0.1",
+        "token": "USDC",
+        "description": "Per contract analysis - includes full 60-feature extraction and ML inference"
+      }
+    ],
+    "payment_address": "0xYourPaymentAddressHere",
+    "payment_verification": {
+      "method": "transaction_receipt",
+      "confirmation_blocks": 1,
+      "network": "base",
+      "chain_id": 8453
+    }
+  },
+  "rate_limits": {
+    "requests_per_minute": 60,
+    "requests_per_day": 1000,
+    "burst_limit": 10
+  },
+  "status": {
+    "operational": true,
+    "uptime_percentage": 99.9,
+    "last_updated": "2025-10-23T00:00:00Z",
+    "health_endpoint": "/health"
+  },
+  "capabilities": {
+    "supported_blockchains": ["ethereum", "bsc", "polygon"],
+    "feature_count": 60,
+    "model_type": "RandomForest",
+    "model_accuracy": 0.94,
+    "average_response_time_ms": 2000
+  },
+  "documentation": {
+    "readme": "https://github.com/hshadab/rugdetector/blob/main/README.md",
+    "api_docs": "https://github.com/hshadab/rugdetector/blob/main/docs/API.md",
+    "examples": "https://github.com/hshadab/rugdetector/blob/main/docs/EXAMPLES.md"
+  }
+}

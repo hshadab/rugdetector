@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Uniswap V2 Router - Legitimate DEX",
+    "contract_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "blockchain": "ethereum",
+    "expected_risk": "low",
+    "description": "Well-established, audited Uniswap V2 router contract"
+  },
+  {
+    "name": "Uniswap V2 Factory - Legitimate",
+    "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+    "blockchain": "ethereum",
+    "expected_risk": "low",
+    "description": "Verified Uniswap V2 factory contract, widely used"
+  },
+  {
+    "name": "USDC Token Contract - Legitimate",
+    "contract_address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "blockchain": "ethereum",
+    "expected_risk": "low",
+    "description": "Circle's USDC stablecoin, fully audited and regulated"
+  },
+  {
+    "name": "Test Contract - Medium Risk Pattern",
+    "contract_address": "0x1111111111111111111111111111111111111111",
+    "blockchain": "ethereum",
+    "expected_risk": "medium",
+    "description": "Test address with medium risk characteristics"
+  },
+  {
+    "name": "Test Contract - High Risk Pattern",
+    "contract_address": "0x0000000000000000000000000000000000000000",
+    "blockchain": "ethereum",
+    "expected_risk": "high",
+    "description": "Test address that should trigger high risk detection"
+  },
+  {
+    "name": "PancakeSwap Router - BSC",
+    "contract_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+    "blockchain": "bsc",
+    "expected_risk": "low",
+    "description": "Official PancakeSwap router on Binance Smart Chain"
+  },
+  {
+    "name": "Random New Token",
+    "contract_address": "0xABCDEF1234567890ABCDEF1234567890ABCDEF12",
+    "blockchain": "ethereum",
+    "expected_risk": "medium",
+    "description": "Unverified new token contract for testing"
+  }
+]

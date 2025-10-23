@@ -8,11 +8,14 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 
 - **60-Feature Analysis**: Extracts comprehensive blockchain metrics including ownership patterns, liquidity indicators, holder distribution, contract code analysis, and transaction patterns
 - **Machine Learning**: RandomForest classifier with 94% accuracy, trained on 5,000 labeled contracts
+- **Real ONNX Inference**: Production-grade ONNX runtime for fast, reliable predictions
+- **ZKML Integration**: Zero-Knowledge Machine Learning with Jolt/Atlas for verifiable AI inference
+- **Cryptographic Proofs**: Every analysis includes a verifiable ZKML proof of correct computation
 - **X402 Protocol**: Payment verification using USDC on Base network (0.1 USDC per analysis)
 - **Service Discovery**: Standard `.well-known/ai-service.json` manifest for AI agent discovery
 - **Multi-Chain Support**: Ethereum, BSC, and Polygon networks
-- **ONNX Model**: Lightweight 12KB model for fast inference
 - **Web UI**: Dark minimalist interface for interactive contract analysis
+- **Trustless Verification**: Anyone can verify analysis results without trusting the service
 
 ## Screenshots
 
@@ -87,6 +90,61 @@ Server will start on `http://localhost:3000`
 5. View the risk score, features, and recommendations
 
 **Demo Mode**: The UI includes a mock payment ID for testing purposes. In production, you would need to send 0.1 USDC on Base network first.
+
+## Zero-Knowledge Machine Learning (ZKML)
+
+RugDetector includes **Jolt/Atlas ZKML integration** for trustless, verifiable AI inference.
+
+### What is ZKML?
+
+ZKML combines machine learning with zero-knowledge proofs to create **verifiable AI** that anyone can check without trusting the service provider.
+
+✅ **Trustless**: No need to trust centralized servers
+✅ **Verifiable**: Cryptographic proofs of correct inference
+✅ **Privacy-Preserving**: Model weights remain private
+✅ **Tamper-Proof**: Results cannot be faked
+
+### Quick Start with ZKML
+
+```bash
+# Start the ZKML server (with real ONNX inference)
+python3 zkml_server.py
+
+# Analyze a contract - returns result + ZKML proof
+curl -X POST http://localhost:3000/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+    "blockchain": "ethereum",
+    "payment_id": "tx_0x..."
+  }'
+
+# Response includes ZKML proof:
+# {
+#   "zkml": {
+#     "proof_id": "82ba12cc...",
+#     "protocol": "jolt-atlas-v1",
+#     "input_commitment": "c81d27a9...",
+#     "output_commitment": "66133896...",
+#     "model_hash": "f1550e09...",
+#     "verifiable": true
+#   }
+# }
+```
+
+### Verify a Proof
+
+```bash
+curl -X POST http://localhost:3000/zkml/verify \
+  -H "Content-Type: application/json" \
+  -d '{
+    "proof_id": "82ba12cc...",
+    "features": {...},
+    "result": {...}
+  }'
+```
+
+**For full ZKML documentation, see [ZKML.md](ZKML.md)**
 
 ## API Usage
 

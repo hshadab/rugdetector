@@ -12,6 +12,16 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 - **Service Discovery**: Standard `.well-known/ai-service.json` manifest for AI agent discovery
 - **Multi-Chain Support**: Ethereum, BSC, and Polygon networks
 - **ONNX Model**: Lightweight 12KB model for fast inference
+- **Web UI**: Dark minimalist interface for interactive contract analysis
+
+## Screenshots
+
+The Web UI features a sleek dark theme with:
+- Real-time contract analysis
+- Interactive risk score visualization
+- Detailed feature breakdown (60+ metrics)
+- Support for Ethereum, BSC, and Polygon
+- Responsive design for all devices
 
 ## Quick Start
 
@@ -61,6 +71,22 @@ npm start
 ```
 
 Server will start on `http://localhost:3000`
+
+**Access the service:**
+- 🎨 Web UI: http://localhost:3000
+- 🔌 API endpoint: http://localhost:3000/check
+- 📋 Service discovery: http://localhost:3000/.well-known/ai-service.json
+- 💚 Health check: http://localhost:3000/health
+
+## Using the Web UI
+
+1. Open http://localhost:3000 in your browser
+2. Enter a smart contract address (0x...)
+3. Select the blockchain (Ethereum, BSC, or Polygon)
+4. Click "Analyze Contract"
+5. View the risk score, features, and recommendations
+
+**Demo Mode**: The UI includes a mock payment ID for testing purposes. In production, you would need to send 0.1 USDC on Base network first.
 
 ## API Usage
 
@@ -280,6 +306,13 @@ rugdetector/
 │   └── rugdetector_v1_metadata.json
 ├── training/
 │   └── train_model.py         # Training pipeline
+├── ui/
+│   ├── index.html             # Web UI (dark minimalist theme)
+│   └── assets/
+│       ├── css/
+│       │   └── styles.css     # UI styles
+│       └── js/
+│           └── app.js         # UI JavaScript
 ├── public/
 │   └── .well-known/
 │       └── ai-service.json    # X402 manifest

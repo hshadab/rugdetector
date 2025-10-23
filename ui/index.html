@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RugDetector - AI-Powered Smart Contract Security</title>
+    <meta name="description" content="Detect rug pulls and scams in smart contracts using AI and machine learning">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-gradient"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="url(#gradient1)" stroke-width="2"/>
+                    <path d="M12 16L15 19L20 13" stroke="url(#gradient1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="gradient1" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#00ffff"/>
+                            <stop offset="100%" stop-color="#00ff88"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">RugDetector</span>
+            </div>
+            <nav class="nav">
+                <a href="#analyzer" class="nav-link active">Analyzer</a>
+                <a href="#docs" class="nav-link">Docs</a>
+                <a href="https://github.com/hshadab/rugdetector" class="nav-link" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">
+                    <span class="gradient-text">AI-Powered</span>
+                    Rug Pull Detection
+                </h1>
+                <p class="hero-subtitle">
+                    Analyze smart contracts for potential scams using machine learning.
+                    <br>60+ blockchain features • 94% accuracy • X402-compliant
+                </p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">5,000+</div>
+                        <div class="stat-label">Contracts Analyzed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">94%</div>
+                        <div class="stat-label">Model Accuracy</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">60+</div>
+                        <div class="stat-label">Features Extracted</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analyzer Section -->
+            <section class="analyzer" id="analyzer">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Contract Analysis</h2>
+                        <p class="card-subtitle">Enter a smart contract address to analyze for rug pull risks</p>
+                    </div>
+
+                    <form class="analyzer-form" id="analyzerForm">
+                        <!-- Contract Address Input -->
+                        <div class="form-group">
+                            <label class="form-label" for="contractAddress">
+                                Contract Address
+                                <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="contractAddress"
+                                class="form-input"
+                                placeholder="0x1234567890abcdef1234567890abcdef12345678"
+                                pattern="^0x[a-fA-F0-9]{40}$"
+                                required
+                            >
+                            <p class="form-hint">Enter a valid Ethereum-compatible address (0x...)</p>
+                        </div>
+
+                        <!-- Blockchain Selection -->
+                        <div class="form-group">
+                            <label class="form-label" for="blockchain">Blockchain</label>
+                            <select id="blockchain" class="form-select">
+                                <option value="ethereum">Ethereum</option>
+                                <option value="bsc">Binance Smart Chain</option>
+                                <option value="polygon">Polygon</option>
+                            </select>
+                        </div>
+
+                        <!-- Payment ID (Mock for demo) -->
+                        <div class="form-group">
+                            <label class="form-label" for="paymentId">
+                                Payment ID
+                                <span class="badge badge-demo">Demo Mode</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="paymentId"
+                                class="form-input"
+                                placeholder="tx_0xabcdef1234567890..."
+                                value="tx_0x0000000000000000000000000000000000000000000000000000000000000000"
+                            >
+                            <p class="form-hint">In production, this would be your USDC payment transaction hash</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                            <span class="btn-text">Analyze Contract</span>
+                            <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 3L10 17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Loading State -->
+                    <div class="loading" id="loadingState" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Analyzing contract...</p>
+                        <p class="loading-subtext">Extracting 60 blockchain features</p>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results" id="results" style="display: none;">
+                    <!-- Risk Score Card -->
+                    <div class="card card-result">
+                        <div class="card-header">
+                            <h3 class="card-title">Risk Analysis</h3>
+                        </div>
+                        <div class="risk-display">
+                            <div class="risk-score-container">
+                                <svg class="risk-circle" width="200" height="200">
+                                    <circle cx="100" cy="100" r="85" stroke="#1a1a1a" stroke-width="8" fill="none"/>
+                                    <circle
+                                        id="riskCircle"
+                                        cx="100"
+                                        cy="100"
+                                        r="85"
+                                        stroke="url(#riskGradient)"
+                                        stroke-width="8"
+                                        fill="none"
+                                        stroke-dasharray="534"
+                                        stroke-dashoffset="534"
+                                        transform="rotate(-90 100 100)"
+                                    />
+                                    <defs>
+                                        <linearGradient id="riskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#00ff88"/>
+                                            <stop offset="100%" stop-color="#00ffff"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="risk-score-text">
+                                    <div class="risk-score" id="riskScore">0.0</div>
+                                    <div class="risk-label" id="riskCategory">Analyzing...</div>
+                                </div>
+                            </div>
+                            <div class="risk-info">
+                                <div class="risk-badge" id="riskBadge">
+                                    <span class="badge-dot"></span>
+                                    <span class="badge-text">Pending</span>
+                                </div>
+                                <p class="risk-recommendation" id="riskRecommendation">
+                                    Waiting for analysis results...
+                                </p>
+                                <div class="risk-confidence">
+                                    <span class="confidence-label">Confidence:</span>
+                                    <span class="confidence-value" id="confidenceValue">N/A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Breakdown -->
+                    <div class="card card-features">
+                        <div class="card-header">
+                            <h3 class="card-title">Feature Analysis</h3>
+                            <p class="card-subtitle">60 blockchain metrics analyzed</p>
+                        </div>
+                        <div class="features-grid" id="featuresGrid">
+                            <!-- Features will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Contract Details -->
+                    <div class="card card-details">
+                        <div class="card-header">
+                            <h3 class="card-title">Contract Details</h3>
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Address:</span>
+                                <span class="detail-value" id="detailAddress">N/A</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Blockchain:</span>
+                                <span class="detail-value" id="detailBlockchain">N/A</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Analysis Time:</span>
+                                <span class="detail-value" id="detailTimestamp">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">
+                    Built with <span class="gradient-text">AI</span> for the DeFi community
+                </p>
+                <p class="footer-disclaimer">
+                    Not financial advice. Always DYOR (Do Your Own Research).
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

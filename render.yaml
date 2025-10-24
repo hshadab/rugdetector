@@ -1,0 +1,47 @@
+services:
+  # Main Web Service
+  - type: web
+    name: rugdetector
+    runtime: docker
+    plan: starter
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: ETHEREUM_RPC_URL
+        sync: false
+      - key: BSC_RPC_URL
+        sync: false
+      - key: POLYGON_RPC_URL
+        sync: false
+      - key: ARBITRUM_RPC_URL
+        sync: false
+      - key: THE_GRAPH_API_KEY
+        sync: false
+      - key: MORALIS_API_KEY
+        sync: false
+      - key: ETHERSCAN_API_KEY
+        sync: false
+      - key: BSCSCAN_API_KEY
+        sync: false
+      - key: POLYGONSCAN_API_KEY
+        sync: false
+      - key: ARBISCAN_API_KEY
+        sync: false
+    buildCommand: |
+      # Install Node.js dependencies
+      npm install
+
+      # Install Python dependencies
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+      # Ensure zkML binary has execute permissions
+      chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core || true
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true

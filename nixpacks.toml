@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ['nodejs-18_x', 'python310']
+
+[phases.install]
+cmds = [
+  'npm ci --only=production',
+  'pip install --no-cache-dir -r requirements.txt'
+]
+
+[phases.build]
+
+[start]
+cmd = 'node api/server.js'

@@ -283,6 +283,223 @@
                     </div>
                 </div>
             </section>
+
+            <!-- API Documentation Section -->
+            <section class="docs-section" id="docs" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">X402 API Documentation</h2>
+                        <p class="card-subtitle">Payment-gated AI service for autonomous agents</p>
+                    </div>
+
+                    <!-- Service Info -->
+                    <div class="api-info">
+                        <div class="api-endpoint">
+                            <span class="endpoint-method">POST</span>
+                            <code class="endpoint-url">https://rugdetector.ai/check</code>
+                        </div>
+                        <div class="api-price">
+                            <span class="price-label">Price:</span>
+                            <span class="price-value">0.1 USDC per analysis</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Start -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">🚀 Quick Start</h3>
+                        <p class="docs-text">1. Send 0.1 USDC to the service wallet on Base network</p>
+                        <p class="docs-text">2. Use the transaction hash as <code>payment_id</code></p>
+                        <p class="docs-text">3. Call the API with your contract address</p>
+                    </div>
+
+                    <!-- Service Discovery -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">🔍 Service Discovery</h3>
+                        <pre class="code-block"><code>GET /.well-known/ai-service.json</code></pre>
+                        <p class="docs-text">Returns X402 manifest with pricing and capabilities</p>
+                    </div>
+
+                    <!-- Request Format -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">📤 Request Format</h3>
+                        <pre class="code-block"><code>{
+  "payment_id": "tx_0xYOUR_TRANSACTION_HASH",
+  "contract_address": "0x1234567890abcdef1234567890abcdef12345678",
+  "blockchain": "ethereum"
+}</code></pre>
+                        <div class="docs-params">
+                            <div class="param-item">
+                                <span class="param-name">payment_id</span>
+                                <span class="param-required">required</span>
+                                <p class="param-desc">USDC payment transaction hash (format: tx_0x...)</p>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">contract_address</span>
+                                <span class="param-required">required</span>
+                                <p class="param-desc">Smart contract address to analyze (0x...)</p>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">blockchain</span>
+                                <span class="param-optional">optional</span>
+                                <p class="param-desc">Network: ethereum, bsc, or polygon (default: ethereum)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Response Format -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">📥 Response Format</h3>
+                        <pre class="code-block"><code>{
+  "success": true,
+  "data": {
+    "riskScore": 0.78,
+    "riskCategory": "high",
+    "confidence": 0.92,
+    "features": {
+      "hasOwnershipTransfer": true,
+      "liquidityRatio": 0.23,
+      "giniCoefficient": 0.76,
+      "... 57 more features": "..."
+    },
+    "recommendation": "High risk detected. Avoid investing.",
+    "analysis_timestamp": "2025-10-24T02:00:00Z",
+    "zkml": {
+      "proof_id": "cc0bad36b87b96ea",
+      "protocol": "jolt-atlas-v1",
+      "verifiable": true
+    }
+  }
+}</code></pre>
+                    </div>
+
+                    <!-- Security Features -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">🛡️ Security Features</h3>
+                        <div class="security-grid">
+                            <div class="security-item">
+                                <div class="security-icon">⚡</div>
+                                <div class="security-info">
+                                    <div class="security-title">Rate Limiting</div>
+                                    <div class="security-desc">60 req/min per IP</div>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-icon">🔒</div>
+                                <div class="security-info">
+                                    <div class="security-title">Replay Protection</div>
+                                    <div class="security-desc">Each payment used once</div>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-icon">✅</div>
+                                <div class="security-info">
+                                    <div class="security-title">Input Validation</div>
+                                    <div class="security-desc">Strict parameter checks</div>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-icon">🔐</div>
+                                <div class="security-info">
+                                    <div class="security-title">zkML Proofs</div>
+                                    <div class="security-desc">Cryptographic verification</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Codes -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">⚠️ Error Codes</h3>
+                        <div class="error-codes">
+                            <div class="error-item">
+                                <span class="error-code">400</span>
+                                <span class="error-name">INVALID_PAYMENT_ID</span>
+                                <p class="error-desc">Payment ID format is invalid</p>
+                            </div>
+                            <div class="error-item">
+                                <span class="error-code">402</span>
+                                <span class="error-name">PAYMENT_ALREADY_USED</span>
+                                <p class="error-desc">Payment ID has already been used</p>
+                            </div>
+                            <div class="error-item">
+                                <span class="error-code">422</span>
+                                <span class="error-name">INVALID_CONTRACT_ADDRESS</span>
+                                <p class="error-desc">Contract address format is invalid</p>
+                            </div>
+                            <div class="error-item">
+                                <span class="error-code">429</span>
+                                <span class="error-name">RATE_LIMIT_EXCEEDED</span>
+                                <p class="error-desc">Too many requests from your IP</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example Code -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">💻 Example Code</h3>
+                        <div class="code-examples">
+                            <div class="code-example">
+                                <div class="code-example-header">JavaScript / Node.js</div>
+                                <pre class="code-block"><code>const response = await fetch('https://rugdetector.ai/check', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    payment_id: 'tx_0xABCD...',
+    contract_address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+    blockchain: 'ethereum'
+  })
+});
+
+const data = await response.json();
+console.log('Risk Score:', data.data.riskScore);</code></pre>
+                            </div>
+
+                            <div class="code-example">
+                                <div class="code-example-header">Python</div>
+                                <pre class="code-block"><code>import requests
+
+response = requests.post('https://rugdetector.ai/check',
+    json={
+        'payment_id': 'tx_0xABCD...',
+        'contract_address': '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        'blockchain': 'ethereum'
+    }
+)
+
+data = response.json()
+print('Risk Score:', data['data']['riskScore'])</code></pre>
+                            </div>
+
+                            <div class="code-example">
+                                <div class="code-example-header">cURL</div>
+                                <pre class="code-block"><code>curl -X POST https://rugdetector.ai/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "payment_id": "tx_0xABCD...",
+    "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+    "blockchain": "ethereum"
+  }'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Resources -->
+                    <div class="docs-section-content">
+                        <h3 class="docs-heading">📚 Additional Resources</h3>
+                        <div class="resources-list">
+                            <a href="https://github.com/hshadab/rugdetector" class="resource-link" target="_blank">
+                                📖 Full Documentation on GitHub
+                            </a>
+                            <a href="/.well-known/ai-service.json" class="resource-link" target="_blank">
+                                🔍 X402 Service Manifest
+                            </a>
+                            <a href="/health" class="resource-link" target="_blank">
+                                💚 Health Check Endpoint
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 

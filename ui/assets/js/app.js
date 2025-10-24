@@ -11,6 +11,10 @@ const loadingState = document.getElementById('loadingState');
 const results = document.getElementById('results');
 const analyzeBtn = document.getElementById('analyzeBtn');
 
+// Section Elements
+const analyzerSection = document.getElementById('analyzer');
+const docsSection = document.getElementById('docs');
+
 // Result Elements
 const riskScore = document.getElementById('riskScore');
 const riskCategory = document.getElementById('riskCategory');
@@ -28,6 +32,9 @@ let currentAnalysis = null;
 
 // Event Listeners
 form.addEventListener('submit', handleFormSubmit);
+
+// Navigation
+setupNavigation();
 
 // Handle form submission
 async function handleFormSubmit(e) {
@@ -422,6 +429,91 @@ function hideLoading() {
     form.style.display = 'flex';
     loadingState.style.display = 'none';
     analyzeBtn.disabled = false;
+}
+
+// Navigation Setup
+function setupNavigation() {
+    // Get nav links
+    const navLinks = document.querySelectorAll('nav a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+
+            // Handle internal navigation
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+
+                // Remove active class from all nav links
+                navLinks.forEach(l => l.classList.remove('active'));
+
+                // Add active class to clicked link
+                link.classList.add('active');
+
+                // Get section ID from href
+                const sectionId = href.substring(1);
+
+                // Show/hide sections
+                showSection(sectionId);
+            }
+        });
+    });
+
+    // Handle initial hash on page load
+    handleInitialHash();
+
+    // Handle hash changes (browser back/forward)
+    window.addEventListener('hashchange', handleHashChange);
+}
+
+function showSection(sectionId) {
+    // Hide all sections
+    if (analyzerSection) analyzerSection.style.display = 'none';
+    if (docsSection) docsSection.style.display = 'none';
+
+    // Show requested section
+    if (sectionId === 'analyzer') {
+        if (analyzerSection) analyzerSection.style.display = 'block';
+    } else if (sectionId === 'docs') {
+        if (docsSection) docsSection.style.display = 'block';
+    }
+}
+
+function handleInitialHash() {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        showSection(hash);
+
+        // Update nav link active state
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${hash}`) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    } else {
+        // Default to analyzer section
+        showSection('analyzer');
+    }
+}
+
+function handleHashChange() {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        showSection(hash);
+
+        // Update nav link active state
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${hash}`) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
 }
 
 console.log('🚀 RugDetector UI initialized');

@@ -108,7 +108,7 @@ ARBISCAN_API_KEY=your_arbiscan_api_key
 Click **"Apply"** and Render will:
 1. Build the Docker image
 2. Deploy to their infrastructure
-3. Assign a public URL (e.g., `rugdetector.onrender.com`)
+3. Assign a public URL (you can then add your custom domain like `rugdetector.ai`)
 
 ### Step 4: Upgrade to Paid Plan (Recommended)
 

@@ -5,7 +5,6 @@ services:
     runtime: docker
     plan: starter
     region: oregon
-    branch: main
     dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
@@ -32,16 +31,5 @@ services:
         sync: false
       - key: ARBISCAN_API_KEY
         sync: false
-    buildCommand: |
-      # Install Node.js dependencies
-      npm install
-
-      # Install Python dependencies
-      pip install --upgrade pip
-      pip install -r requirements.txt
-
-      # Ensure zkML binary has execute permissions
-      chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core || true
-    startCommand: npm start
     healthCheckPath: /health
     autoDeploy: true

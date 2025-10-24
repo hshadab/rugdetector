@@ -109,8 +109,10 @@
                             <label class="form-label" for="blockchain">Blockchain</label>
                             <select id="blockchain" class="form-select">
                                 <option value="ethereum">Ethereum</option>
-                                <option value="bsc">Binance Smart Chain</option>
+                                <option value="base">Base</option>
+                                <option value="bsc">Binance Smart Chain (BSC)</option>
                                 <option value="polygon">Polygon</option>
+                                <option value="solana">Solana</option>
                             </select>
                         </div>
 
@@ -124,10 +126,10 @@
                                 type="text"
                                 id="paymentId"
                                 class="form-input"
-                                placeholder="tx_0xabcdef1234567890..."
-                                value="tx_0x0000000000000000000000000000000000000000000000000000000000000000"
+                                placeholder="demo_test (or tx_0x... for real payment)"
+                                value="demo_test_123"
                             >
-                            <p class="form-hint">In production, this would be your USDC payment transaction hash</p>
+                            <p class="form-hint">🎭 Demo Mode: Use "demo_" prefix to test without payment. In production, use your USDC payment transaction hash.</p>
                         </div>
 
                         <!-- Submit Button -->
@@ -307,6 +309,11 @@
                     <!-- Quick Start -->
                     <div class="docs-section-content">
                         <h3 class="docs-heading">🚀 Quick Start</h3>
+                        <p class="docs-text"><strong>🎭 Demo Mode (Free Testing):</strong></p>
+                        <p class="docs-text">• Use <code>payment_id</code> starting with "demo_" (e.g., <code>demo_test_123</code>)</p>
+                        <p class="docs-text">• No payment required - instant testing!</p>
+                        <br>
+                        <p class="docs-text"><strong>💰 Production Mode:</strong></p>
                         <p class="docs-text">1. Send 0.1 USDC to the service wallet on Base network</p>
                         <p class="docs-text">2. Use the transaction hash as <code>payment_id</code></p>
                         <p class="docs-text">3. Call the API with your contract address</p>
@@ -341,7 +348,7 @@
                             <div class="param-item">
                                 <span class="param-name">blockchain</span>
                                 <span class="param-optional">optional</span>
-                                <p class="param-desc">Network: ethereum, bsc, or polygon (default: ethereum)</p>
+                                <p class="param-desc">Network: ethereum, base, bsc, polygon, or solana (default: ethereum)</p>
                             </div>
                         </div>
                     </div>
@@ -444,9 +451,9 @@
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    payment_id: 'tx_0xABCD...',
+    payment_id: 'demo_test_123', // Use 'demo_' prefix for free testing
     contract_address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-    blockchain: 'ethereum'
+    blockchain: 'ethereum' // or 'base', 'bsc', 'polygon', 'solana'
   })
 });
 
@@ -460,9 +467,9 @@ console.log('Risk Score:', data.data.riskScore);</code></pre>
 
 response = requests.post('https://rugdetector.ai/check',
     json={
-        'payment_id': 'tx_0xABCD...',
+        'payment_id': 'demo_test_123',  # Use 'demo_' for free testing
         'contract_address': '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-        'blockchain': 'ethereum'
+        'blockchain': 'base'  # ethereum, base, bsc, polygon, solana
     }
 )
 
@@ -475,9 +482,9 @@ print('Risk Score:', data['data']['riskScore'])</code></pre>
                                 <pre class="code-block"><code>curl -X POST https://rugdetector.ai/check \
   -H "Content-Type: application/json" \
   -d '{
-    "payment_id": "tx_0xABCD...",
+    "payment_id": "demo_test_123",
     "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-    "blockchain": "ethereum"
+    "blockchain": "solana"
   }'</code></pre>
                             </div>
                         </div>

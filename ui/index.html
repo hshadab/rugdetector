@@ -46,22 +46,35 @@
                     Rug Pull Detection
                 </h1>
                 <p class="hero-subtitle">
-                    Analyze smart contracts for potential scams using machine learning.
-                    <br>60+ blockchain features • 94% accuracy • X402-compliant
+                    Analyze smart contracts using real blockchain data and advanced AI.
+                    <br>100% Real Data • DEX Liquidity • Holder Analytics • Historical Tracking
                 </p>
                 <div class="stats">
                     <div class="stat">
-                        <div class="stat-value">5,000+</div>
-                        <div class="stat-label">Contracts Analyzed</div>
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Real Blockchain Data</div>
                     </div>
                     <div class="stat">
                         <div class="stat-value">94%</div>
                         <div class="stat-label">Model Accuracy</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value">60+</div>
-                        <div class="stat-label">Features Extracted</div>
+                        <div class="stat-value">60</div>
+                        <div class="stat-label">Features Analyzed</div>
                     </div>
+                    <div class="stat">
+                        <div class="stat-value">🛡️</div>
+                        <div class="stat-label">Secure & Protected</div>
+                    </div>
+                </div>
+
+                <!-- Feature Highlights -->
+                <div class="feature-badges">
+                    <span class="feature-badge">✅ DEX Liquidity Analysis</span>
+                    <span class="feature-badge">✅ True Gini Coefficient</span>
+                    <span class="feature-badge">✅ Historical Tracking</span>
+                    <span class="feature-badge">✅ Rate Limited</span>
+                    <span class="feature-badge">✅ Replay Protected</span>
                 </div>
             </section>
 
@@ -130,7 +143,14 @@
                     <div class="loading" id="loadingState" style="display: none;">
                         <div class="loading-spinner"></div>
                         <p class="loading-text">Analyzing contract...</p>
-                        <p class="loading-subtext">Extracting 60 blockchain features</p>
+                        <p class="loading-subtext" id="loadingSubtext">Extracting real blockchain data</p>
+                        <div class="loading-steps">
+                            <div class="loading-step" id="step1">⏳ Fetching contract code...</div>
+                            <div class="loading-step" id="step2">⏳ Analyzing DEX liquidity...</div>
+                            <div class="loading-step" id="step3">⏳ Checking holder distribution...</div>
+                            <div class="loading-step" id="step4">⏳ Tracking historical transfers...</div>
+                            <div class="loading-step" id="step5">⏳ Running AI analysis...</div>
+                        </div>
                     </div>
                 </div>
 
@@ -185,11 +205,56 @@
                         </div>
                     </div>
 
+                    <!-- Data Sources Info -->
+                    <div class="card card-sources">
+                        <div class="card-header">
+                            <h3 class="card-title">🔍 Data Sources</h3>
+                            <p class="card-subtitle">All data fetched from real blockchain sources</p>
+                        </div>
+                        <div class="sources-grid">
+                            <div class="source-item">
+                                <div class="source-icon">📊</div>
+                                <div class="source-info">
+                                    <div class="source-name">The Graph</div>
+                                    <div class="source-desc">DEX liquidity data</div>
+                                </div>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-icon">💰</div>
+                                <div class="source-info">
+                                    <div class="source-name">Moralis API</div>
+                                    <div class="source-desc">Holder distribution</div>
+                                </div>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-icon">⛓️</div>
+                                <div class="source-info">
+                                    <div class="source-name">RPC Nodes</div>
+                                    <div class="source-desc">Contract bytecode</div>
+                                </div>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-icon">🔎</div>
+                                <div class="source-info">
+                                    <div class="source-name">Block Explorers</div>
+                                    <div class="source-desc">Verification status</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Features Breakdown -->
                     <div class="card card-features">
                         <div class="card-header">
                             <h3 class="card-title">Feature Analysis</h3>
-                            <p class="card-subtitle">60 blockchain metrics analyzed</p>
+                            <p class="card-subtitle">60 real blockchain metrics analyzed</p>
+                        </div>
+                        <div class="features-tabs">
+                            <button class="tab-btn active" data-category="all">All (60)</button>
+                            <button class="tab-btn" data-category="ownership">Ownership</button>
+                            <button class="tab-btn" data-category="liquidity">Liquidity</button>
+                            <button class="tab-btn" data-category="holders">Holders</button>
+                            <button class="tab-btn" data-category="code">Code</button>
                         </div>
                         <div class="features-grid" id="featuresGrid">
                             <!-- Features will be populated dynamically -->

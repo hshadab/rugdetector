@@ -5,6 +5,10 @@ const express = require('express');
 const router = express.Router();
 const paymentService = require('../services/payment');
 const rugDetector = require('../services/rugDetector');
+const { getPaymentTracker } = require('../services/paymentTracker');
+
+// Initialize payment tracker
+const paymentTracker = getPaymentTracker();
 
 // POST /check - Analyze contract for rug pull risk
 router.post('/', async (req, res) => {
@@ -45,6 +49,28 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Validate payment ID format
+    const paymentIdPattern = /^(tx_)?0x[a-fA-F0-9]{64}$/;
+    if (!paymentIdPattern.test(payment_id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid payment_id format. Expected transaction hash (0x... or tx_0x...)',
+        error_code: 'INVALID_PAYMENT_ID'
+      });
+    }
+
+    // Step 0: Check for payment replay attack
+    console.log(`[Check] Checking payment replay for: ${payment_id}`);
+    if (paymentTracker.isUsed(payment_id)) {
+      console.log(`[Check] ⚠️ REPLAY ATTACK DETECTED: ${payment_id}`);
+      return res.status(402).json({
+        success: false,
+        error: 'Payment ID has already been used. Each payment can only be used for one analysis.',
+        error_code: 'PAYMENT_ALREADY_USED',
+        hint: 'Please make a new payment for another analysis.'
+      });
+    }
+
     // Step 1: Verify payment
     console.log(`[Check] Verifying payment: ${payment_id}`);
     try {
@@ -58,11 +84,33 @@ router.post('/', async (req, res) => {
       }
 
       console.log(`[Check] Payment verified: ${paymentVerified.amount} USDC units`);
+
+      // Mark payment as used AFTER successful verification
+      const marked = paymentTracker.markUsed(payment_id, {
+        contract_address,
+        blockchain,
+        timestamp: new Date().toISOString(),
+        amount: paymentVerified.amount
+      });
+
+      if (!marked) {
+        // This shouldn't happen since we checked above, but handle it anyway
+        console.error('[Check] Failed to mark payment as used (race condition?)');
+        return res.status(402).json({
+          success: false,
+          error: 'Payment ID has already been used.',
+          error_code: 'PAYMENT_ALREADY_USED'
+        });
+      }
+
+      console.log(`[Check] ✅ Payment marked as used: ${payment_id}`);
+
     } catch (paymentError) {
       console.error('[Check] Payment verification error:', paymentError.message);
       return res.status(402).json({
         success: false,
-        error: `Payment verification failed: ${paymentError.message}`
+        error: `Payment verification failed: ${paymentError.message}`,
+        error_code: 'PAYMENT_VERIFICATION_FAILED'
       });
     }
 

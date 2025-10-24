@@ -9,14 +9,21 @@
     "train": "python3 training/train_model.py",
     "test": "node test/manual_test.js"
   },
-  "keywords": ["x402", "blockchain", "rug-pull", "ai-agent", "defi"],
+  "keywords": [
+    "x402",
+    "blockchain",
+    "rug-pull",
+    "ai-agent",
+    "defi"
+  ],
   "author": "hshadab",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ethers": "^6.9.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1",
     "onnxruntime-node": "^1.16.0"
   },
   "devDependencies": {

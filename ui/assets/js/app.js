@@ -165,32 +165,65 @@ function displayFeatures(features) {
 
     // Create feature categories
     const categories = {
-        'Ownership': ['hasOwnershipTransfer', 'hasRenounceOwnership', 'ownerBalance', 'ownerVerified', 'ownerBlacklisted'],
-        'Liquidity': ['hasLiquidityLock', 'liquidityRatio', 'liquidityLockedDays', 'lowLiquidityWarning'],
-        'Holders': ['holderCount', 'holderConcentration', 'top10HoldersPercent', 'suspiciousHolderPatterns'],
-        'Code': ['hasHiddenMint', 'hasPausableTransfers', 'hasBlacklist', 'verifiedContract', 'auditedByFirm'],
-        'Transactions': ['avgDailyTransactions', 'suspiciousPatterns', 'highFailureRate'],
-        'Time': ['contractAge', 'lastActivityDays']
+        'ownership': ['hasOwnershipTransfer', 'hasRenounceOwnership', 'ownerBalance', 'ownerVerified', 'ownerBlacklisted'],
+        'liquidity': ['hasLiquidityLock', 'liquidityRatio', 'liquidityLockedDays', 'lowLiquidityWarning', 'liquidityValue', 'liquidityChangePercent'],
+        'holders': ['holderCount', 'holderConcentration', 'top10HoldersPercent', 'suspiciousHolderPatterns', 'giniCoefficient'],
+        'code': ['hasHiddenMint', 'hasPausableTransfers', 'hasBlacklist', 'verifiedContract', 'auditedByFirm'],
+        'time': ['contractAge', 'lastActivityDays', 'avgDailyTransactions', 'suspiciousPatterns', 'highFailureRate']
     };
 
-    // Display features by category
-    Object.entries(categories).forEach(([categoryName, featureKeys]) => {
-        featureKeys.forEach(key => {
-            if (features.hasOwnProperty(key)) {
-                const value = features[key];
+    // Store all features with their categories
+    window.featureCategories = categories;
+    window.allFeatures = features;
+
+    // Display all features initially
+    displayFeaturesByCategory('all');
+
+    // Setup tab listeners
+    setupFeatureTabs();
+}
+
+// Display features by category
+function displayFeaturesByCategory(category) {
+    featuresGrid.innerHTML = '';
+
+    if (category === 'all') {
+        // Display all features
+        Object.entries(window.allFeatures).forEach(([key, value]) => {
+            const featureEl = createFeatureElement(key, value);
+            featuresGrid.appendChild(featureEl);
+        });
+    } else {
+        // Display features for specific category
+        const categoryFeatures = window.featureCategories[category] || [];
+        categoryFeatures.forEach(key => {
+            if (window.allFeatures.hasOwnProperty(key)) {
+                const value = window.allFeatures[key];
                 const featureEl = createFeatureElement(key, value);
                 featuresGrid.appendChild(featureEl);
             }
         });
-    });
+    }
+}
 
-    // Add remaining features
-    featureArray.forEach(([key, value]) => {
-        const alreadyDisplayed = Object.values(categories).flat().includes(key);
-        if (!alreadyDisplayed) {
-            const featureEl = createFeatureElement(key, value);
-            featuresGrid.appendChild(featureEl);
-        }
+// Setup feature tab listeners
+function setupFeatureTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabBtns.forEach(b => b.classList.remove('active'));
+
+            // Add active class to clicked tab
+            btn.classList.add('active');
+
+            // Get category
+            const category = btn.getAttribute('data-category');
+
+            // Display features for this category
+            displayFeaturesByCategory(category);
+        });
     });
 }
 
@@ -243,6 +276,9 @@ function showLoading() {
     loadingState.style.display = 'block';
     results.style.display = 'none';
     analyzeBtn.disabled = true;
+
+    // Animate loading steps
+    animateLoadingSteps();
 }
 
 // Hide loading state
@@ -333,6 +369,60 @@ document.querySelectorAll('[data-tooltip]').forEach(element => {
         // Add tooltip display logic here
     });
 });
+
+// Animate loading steps
+function animateLoadingSteps() {
+    const steps = [
+        'step1', 'step2', 'step3', 'step4', 'step5'
+    ];
+
+    // Reset all steps
+    steps.forEach(stepId => {
+        const step = document.getElementById(stepId);
+        if (step) {
+            step.classList.remove('active', 'completed');
+        }
+    });
+
+    // Animate steps sequentially
+    let currentStep = 0;
+    const stepDuration = 1200; // ms per step
+
+    const interval = setInterval(() => {
+        if (currentStep > 0) {
+            const prevStep = document.getElementById(steps[currentStep - 1]);
+            if (prevStep) {
+                prevStep.classList.remove('active');
+                prevStep.classList.add('completed');
+                prevStep.textContent = prevStep.textContent.replace('⏳', '✅');
+            }
+        }
+
+        if (currentStep < steps.length) {
+            const step = document.getElementById(steps[currentStep]);
+            if (step) {
+                step.classList.add('active');
+            }
+            currentStep++;
+        } else {
+            clearInterval(interval);
+        }
+    }, stepDuration);
+
+    // Store interval ID to clear it when results are shown
+    window.loadingInterval = interval;
+}
+
+// Override hideLoading to clear loading animation
+const originalHideLoading = hideLoading;
+function hideLoading() {
+    if (window.loadingInterval) {
+        clearInterval(window.loadingInterval);
+    }
+    form.style.display = 'flex';
+    loadingState.style.display = 'none';
+    analyzeBtn.disabled = false;
+}
 
 console.log('🚀 RugDetector UI initialized');
 console.log('API endpoint:', API_ENDPOINT);

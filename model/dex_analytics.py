@@ -249,7 +249,7 @@ class DEXLiquidityAnalyzer:
             }
         except Exception as e:
             print(f"Failed to check liquidity locks: {e}", file=sys.stderr)
-            return {'is_locked': False, 'locked_percentage': 0}
+            return {'is_locked': 0, 'locked_percentage': 0}
 
     def analyze_all_dexes(self, w3: Web3) -> dict:
         """Analyze liquidity across all relevant DEXes"""
@@ -494,7 +494,7 @@ class HistoricalAnalyzer:
             if not transfers:
                 return {
                     'ownership_changes': 0,
-                    'suspicious_patterns': False,
+                    'suspicious_patterns': 0,
                     'large_transfers': 0
                 }
 
@@ -547,7 +547,7 @@ class HistoricalAnalyzer:
             print(f"Failed to analyze ownership changes: {e}", file=sys.stderr)
             return {
                 'ownership_changes': 0,
-                'suspicious_patterns': False
+                'suspicious_patterns': 0
             }
 
 

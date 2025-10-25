@@ -1,110 +1,183 @@
 {
   "name": "RugDetector",
   "version": "1.0.0",
-  "description": "AI-powered rug pull detector for smart contracts. Analyzes 60+ blockchain features to assess risk using machine learning.",
+  "description": "AI-powered rug pull detector for smart contracts. Analyzes 60+ blockchain features using zkML (Jolt Atlas) to assess risk with cryptographically verifiable proofs.",
   "provider": {
     "name": "hshadab",
     "url": "https://github.com/hshadab/rugdetector",
-    "support_email": "support@rugdetector.example.com"
+    "website": "https://rugdetector.ai",
+    "support_email": "support@rugdetector.ai"
   },
   "api": {
     "type": "rest",
-    "base_url": "https://rugdetector.example.com",
+    "base_url": "https://rugdetector.ai",
+    "protocol": "x402",
+    "x402_compliant": true,
     "endpoints": [
       {
         "path": "/check",
         "method": "POST",
-        "description": "Analyze a smart contract for rug pull risk",
+        "description": "Analyze a smart contract for rug pull risk using 60+ features and zkML verification",
+        "payment_required": true,
+        "payment_methods": [
+          {
+            "type": "x402_header",
+            "header": "X-PAYMENT",
+            "format": "base64-encoded JSON",
+            "description": "X402-compliant payment proof via HTTP header"
+          },
+          {
+            "type": "json_body",
+            "field": "payment_id",
+            "format": "transaction hash (tx_0x...)",
+            "description": "Legacy payment proof in request body"
+          },
+          {
+            "type": "demo_mode",
+            "field": "payment_id",
+            "format": "demo_*",
+            "description": "Free testing mode - use payment_id starting with 'demo_'"
+          }
+        ],
         "parameters": {
           "payment_id": {
             "type": "string",
-            "required": true,
-            "description": "X402 payment transaction ID (format: tx_0x...)",
-            "example": "tx_0xabcdef1234567890..."
+            "required": false,
+            "description": "Payment transaction ID (format: tx_0x...) or demo mode (demo_*). Can be omitted if using X-PAYMENT header.",
+            "example": "tx_0xabcdef1234567890... or demo_test_123"
           },
           "contract_address": {
             "type": "string",
             "required": true,
-            "pattern": "^0x[a-fA-F0-9]{40}$",
-            "description": "Ethereum-compatible contract address to analyze",
+            "pattern": "^0x[a-fA-F0-9]{40}$ (EVM) or ^[1-9A-HJ-NP-Za-km-z]{32,44}$ (Solana)",
+            "description": "Smart contract address to analyze",
             "example": "0x1234567890abcdef1234567890abcdef12345678"
           },
           "blockchain": {
             "type": "string",
             "required": false,
             "default": "ethereum",
-            "enum": ["ethereum", "bsc", "polygon"],
+            "enum": ["ethereum", "base", "bsc", "polygon", "solana"],
             "description": "Blockchain network where the contract is deployed"
           }
         },
+        "headers": {
+          "X-PAYMENT": {
+            "required": false,
+            "description": "X402 payment proof header (base64-encoded JSON payload)",
+            "format": "base64(JSON)",
+            "example": "eyJzY2hlbWUiOiJleGFjdCIsIm5ldHdvcmsiOiJiYXNlIi4uLg==",
+            "payload_schema": {
+              "scheme": "string (exact|subscription|metered)",
+              "network": "string (base)",
+              "currency": "string (USDC)",
+              "amount": "string (0.1)",
+              "txHash": "string (0x...)"
+            }
+          },
+          "Content-Type": {
+            "required": true,
+            "value": "application/json"
+          }
+        },
         "response": {
-          "type": "object",
-          "properties": {
-            "success": {
-              "type": "boolean",
-              "description": "Indicates if the request was successful"
-            },
-            "data": {
-              "type": "object",
-              "properties": {
-                "riskScore": {
-                  "type": "number",
-                  "description": "Risk score from 0.0 (safe) to 1.0 (dangerous)",
-                  "minimum": 0.0,
-                  "maximum": 1.0
-                },
-                "riskCategory": {
-                  "type": "string",
-                  "enum": ["low", "medium", "high"],
-                  "description": "Risk classification"
-                },
-                "confidence": {
-                  "type": "number",
-                  "description": "Model confidence in the prediction",
-                  "minimum": 0.0,
-                  "maximum": 1.0
-                },
-                "features": {
-                  "type": "object",
-                  "description": "All 60 extracted blockchain features used for analysis"
-                },
-                "recommendation": {
-                  "type": "string",
-                  "description": "Human-readable recommendation based on risk level"
-                },
-                "analysis_timestamp": {
-                  "type": "string",
-                  "format": "date-time",
-                  "description": "ISO 8601 timestamp of analysis"
+          "200": {
+            "description": "Successful analysis",
+            "schema": {
+              "success": true,
+              "data": {
+                "riskScore": "number (0.0-1.0)",
+                "riskCategory": "string (low|medium|high)",
+                "confidence": "number (0.0-1.0)",
+                "features": "object (60 blockchain features)",
+                "recommendation": "string",
+                "analysis_timestamp": "string (ISO 8601)",
+                "zkml": {
+                  "proof_id": "string",
+                  "protocol": "jolt-atlas-v1",
+                  "verifiable": true
                 }
               }
+            }
+          },
+          "402": {
+            "description": "Payment required (X402-compliant)",
+            "headers": {
+              "X-PAYMENT-RESPONSE": "base64-encoded payment details",
+              "WWW-Authenticate": "X402"
+            },
+            "schema": {
+              "success": false,
+              "error": "Payment required",
+              "error_code": "PAYMENT_REQUIRED",
+              "message": "This endpoint requires payment. Send 0.1 USDC on Base network.",
+              "payment_details": {
+                "amount": "0.1",
+                "currency": "USDC",
+                "network": "base",
+                "recipient": "string"
+              },
+              "hint": "Include X-PAYMENT header with payment proof, or use demo mode"
             }
           }
         },
         "errors": [
           {
             "code": 400,
+            "error_code": "INVALID_PAYMENT_ID",
             "description": "Bad request - missing required fields or invalid format"
           },
           {
             "code": 402,
-            "description": "Payment required - payment verification failed"
+            "error_code": "PAYMENT_REQUIRED|PAYMENT_ALREADY_USED|PAYMENT_VERIFICATION_FAILED",
+            "description": "Payment required, already used, or verification failed"
           },
           {
             "code": 422,
+            "error_code": "INVALID_CONTRACT_ADDRESS",
             "description": "Unprocessable entity - invalid contract address or blockchain"
+          },
+          {
+            "code": 429,
+            "error_code": "RATE_LIMIT_EXCEEDED",
+            "description": "Too many requests from your IP address"
           },
           {
             "code": 500,
             "description": "Internal server error - feature extraction or analysis failed"
           }
         ]
+      },
+      {
+        "path": "/health",
+        "method": "GET",
+        "description": "Health check endpoint",
+        "payment_required": false,
+        "response": {
+          "200": {
+            "schema": {
+              "status": "healthy",
+              "timestamp": "string (ISO 8601)",
+              "uptime": "number (seconds)"
+            }
+          }
+        }
       }
     ]
   },
   "payment": {
     "protocol": "x402",
     "version": "1.0",
+    "specification": "https://github.com/coinbase/x402",
+    "features": {
+      "http_402_status": true,
+      "x_payment_header": true,
+      "x_payment_response_header": true,
+      "www_authenticate_header": true,
+      "payment_schemes": ["exact"],
+      "replay_protection": true,
+      "demo_mode": true
+    },
     "supported_tokens": [
       {
         "symbol": "USDC",
@@ -112,15 +185,18 @@
         "blockchain": "base",
         "chain_id": 8453,
         "contract_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "decimals": 6
+        "decimals": 6,
+        "network_name": "Base Mainnet"
       }
     ],
     "pricing": [
       {
         "endpoint": "/check",
+        "scheme": "exact",
         "amount": "0.1",
         "token": "USDC",
-        "description": "Per contract analysis - includes full 60-feature extraction and ML inference"
+        "network": "base",
+        "description": "Per contract analysis - includes full 60-feature extraction, zkML inference, and verifiable proof generation"
       }
     ],
     "payment_address": "0xYourPaymentAddressHere",
@@ -128,30 +204,141 @@
       "method": "transaction_receipt",
       "confirmation_blocks": 1,
       "network": "base",
-      "chain_id": 8453
+      "chain_id": 8453,
+      "rpc_url": "https://mainnet.base.org",
+      "replay_protection": {
+        "enabled": true,
+        "ttl_seconds": 3600,
+        "description": "Each payment can only be used once within 1 hour window"
+      }
     }
   },
   "rate_limits": {
-    "requests_per_minute": 60,
-    "requests_per_day": 1000,
-    "burst_limit": 10
+    "global": {
+      "requests_per_minute": 60,
+      "window_ms": 60000,
+      "description": "Global rate limit per IP address"
+    },
+    "payment_verification": {
+      "requests_per_minute": 30,
+      "window_ms": 60000,
+      "description": "Payment verification rate limit per IP address"
+    },
+    "burst_limit": 10,
+    "headers": {
+      "RateLimit-Policy": "60;w=60 (global) or 30;w=60 (payment verification)",
+      "RateLimit-Limit": "Maximum requests allowed",
+      "RateLimit-Remaining": "Requests remaining in current window",
+      "RateLimit-Reset": "Seconds until window reset"
+    }
+  },
+  "security": {
+    "features": [
+      "Rate limiting (DOS prevention)",
+      "Payment replay prevention (TTL-based)",
+      "Input validation and sanitization",
+      "Payload size limits (1KB max)",
+      "Transaction verification on-chain"
+    ],
+    "cors": {
+      "enabled": true,
+      "origin": "*"
+    }
   },
   "status": {
     "operational": true,
     "uptime_percentage": 99.9,
-    "last_updated": "2025-10-23T00:00:00Z",
-    "health_endpoint": "/health"
+    "last_updated": "2025-10-24T00:00:00Z",
+    "health_endpoint": "/health",
+    "monitoring": "https://rugdetector.ai/health"
   },
   "capabilities": {
-    "supported_blockchains": ["ethereum", "bsc", "polygon"],
-    "feature_count": 60,
-    "model_type": "RandomForest",
-    "model_accuracy": 0.94,
-    "average_response_time_ms": 2000
+    "supported_blockchains": [
+      {
+        "name": "Ethereum",
+        "id": "ethereum",
+        "chain_id": 1,
+        "type": "EVM"
+      },
+      {
+        "name": "Base",
+        "id": "base",
+        "chain_id": 8453,
+        "type": "EVM"
+      },
+      {
+        "name": "Binance Smart Chain",
+        "id": "bsc",
+        "chain_id": 56,
+        "type": "EVM"
+      },
+      {
+        "name": "Polygon",
+        "id": "polygon",
+        "chain_id": 137,
+        "type": "EVM"
+      },
+      {
+        "name": "Solana",
+        "id": "solana",
+        "chain_id": null,
+        "type": "Non-EVM"
+      }
+    ],
+    "features": {
+      "feature_count": 60,
+      "real_blockchain_data": true,
+      "feature_categories": [
+        "Ownership analysis",
+        "DEX liquidity tracking",
+        "Holder distribution (Gini coefficient)",
+        "Contract bytecode analysis",
+        "Token transfer patterns",
+        "Smart contract verification status"
+      ]
+    },
+    "ml_model": {
+      "type": "RandomForest",
+      "accuracy": 0.94,
+      "framework": "ONNX",
+      "inference_time_ms": 100
+    },
+    "zkml": {
+      "enabled": true,
+      "protocol": "Jolt Atlas",
+      "version": "v1",
+      "proof_type": "lookup-based",
+      "proof_time_ms": 700,
+      "verifiable": true,
+      "description": "Cryptographically verifiable AI inference with zero-knowledge proofs"
+    },
+    "performance": {
+      "average_response_time_ms": 2000,
+      "feature_extraction_time_ms": 1800,
+      "inference_time_ms": 100,
+      "proof_generation_time_ms": 700
+    }
   },
   "documentation": {
+    "website": "https://rugdetector.ai",
+    "api_docs": "https://rugdetector.ai/#docs",
+    "github": "https://github.com/hshadab/rugdetector",
     "readme": "https://github.com/hshadab/rugdetector/blob/main/README.md",
-    "api_docs": "https://github.com/hshadab/rugdetector/blob/main/docs/API.md",
-    "examples": "https://github.com/hshadab/rugdetector/blob/main/docs/EXAMPLES.md"
+    "x402_spec": "https://github.com/coinbase/x402",
+    "examples": {
+      "javascript": "https://rugdetector.ai/#docs (X402 Protocol example)",
+      "python": "https://rugdetector.ai/#docs (Python example)",
+      "curl": "https://rugdetector.ai/#docs (cURL example)"
+    }
+  },
+  "discovery": {
+    "x402_ecosystem": {
+      "listed": false,
+      "url": "https://x402.org/ecosystem",
+      "submission_pending": true
+    },
+    "service_type": "ai_inference",
+    "use_case": "DeFi security analysis",
+    "tags": ["defi", "security", "ai", "blockchain", "zkml", "x402", "rugpull", "smart-contracts"]
   }
 }

@@ -6,6 +6,7 @@ const router = express.Router();
 const paymentService = require('../services/payment');
 const rugDetector = require('../services/rugDetector');
 const { getPaymentTracker } = require('../services/paymentTracker');
+const x402 = require('../services/x402');
 
 // Initialize payment tracker
 const paymentTracker = getPaymentTracker();
@@ -14,20 +15,37 @@ const paymentTracker = getPaymentTracker();
 router.post('/', async (req, res) => {
   try {
     // Extract request parameters
-    const { payment_id, contract_address, blockchain = 'ethereum' } = req.body;
+    let { payment_id, contract_address, blockchain = 'ethereum' } = req.body;
 
-    // Validate required fields
-    if (!payment_id) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: payment_id'
-      });
-    }
-
+    // Validate contract_address first
     if (!contract_address) {
       return res.status(400).json({
         success: false,
         error: 'Missing required field: contract_address'
+      });
+    }
+
+    // X402: Check for X-PAYMENT header as alternative to JSON body
+    const xPaymentHeader = req.get('X-PAYMENT');
+    if (!payment_id && xPaymentHeader) {
+      console.log('[X402] Found X-PAYMENT header, parsing...');
+      const payment = x402.parsePaymentHeader(xPaymentHeader);
+      if (payment && x402.isValidPaymentPayload(payment)) {
+        payment_id = x402.extractTransactionHash(payment);
+        console.log(`[X402] Extracted payment_id from header: ${payment_id}`);
+      } else {
+        console.log('[X402] Invalid X-PAYMENT header format');
+      }
+    }
+
+    // Validate payment_id (after checking X-PAYMENT header)
+    if (!payment_id) {
+      return x402.create402Response(res, {
+        amount: '0.1',
+        currency: 'USDC',
+        network: 'base',
+        recipient: process.env.PAYMENT_ADDRESS,
+        description: 'Smart contract analysis'
       });
     }
 
@@ -93,11 +111,12 @@ router.post('/', async (req, res) => {
       console.log(`[Check] Checking payment replay for: ${payment_id}`);
       if (paymentTracker.isUsed(payment_id)) {
         console.log(`[Check] ⚠️ REPLAY ATTACK DETECTED: ${payment_id}`);
-        return res.status(402).json({
-          success: false,
-          error: 'Payment ID has already been used. Each payment can only be used for one analysis.',
-          error_code: 'PAYMENT_ALREADY_USED',
-          hint: 'Please make a new payment for another analysis.'
+        return x402.create402Response(res, {
+          amount: '0.1',
+          currency: 'USDC',
+          network: 'base',
+          recipient: process.env.PAYMENT_ADDRESS,
+          description: 'Smart contract analysis (payment already used)'
         });
       }
     }
@@ -111,9 +130,12 @@ router.post('/', async (req, res) => {
         const paymentVerified = await paymentService.verifyPayment(payment_id);
 
         if (!paymentVerified.verified) {
-          return res.status(402).json({
-            success: false,
-            error: 'Payment verification failed. Please ensure you sent 0.1 USDC to the service address.'
+          return x402.create402Response(res, {
+            amount: '0.1',
+            currency: 'USDC',
+            network: 'base',
+            recipient: process.env.PAYMENT_ADDRESS,
+            description: 'Smart contract analysis (payment verification failed)'
           });
         }
 
@@ -130,10 +152,12 @@ router.post('/', async (req, res) => {
         if (!marked) {
           // This shouldn't happen since we checked above, but handle it anyway
           console.error('[Check] Failed to mark payment as used (race condition?)');
-          return res.status(402).json({
-            success: false,
-            error: 'Payment ID has already been used.',
-            error_code: 'PAYMENT_ALREADY_USED'
+          return x402.create402Response(res, {
+            amount: '0.1',
+            currency: 'USDC',
+            network: 'base',
+            recipient: process.env.PAYMENT_ADDRESS,
+            description: 'Smart contract analysis (payment already used - race condition)'
           });
         }
 
@@ -141,10 +165,12 @@ router.post('/', async (req, res) => {
 
       } catch (paymentError) {
         console.error('[Check] Payment verification error:', paymentError.message);
-        return res.status(402).json({
-          success: false,
-          error: `Payment verification failed: ${paymentError.message}`,
-          error_code: 'PAYMENT_VERIFICATION_FAILED'
+        return x402.create402Response(res, {
+          amount: '0.1',
+          currency: 'USDC',
+          network: 'base',
+          recipient: process.env.PAYMENT_ADDRESS,
+          description: `Smart contract analysis (error: ${paymentError.message})`
         });
       }
     }

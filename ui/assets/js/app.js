@@ -467,6 +467,9 @@ function setupNavigation() {
 }
 
 function showSection(sectionId) {
+    // Get hero section
+    const heroSection = document.querySelector('.hero');
+
     // Hide all sections
     if (analyzerSection) analyzerSection.style.display = 'none';
     if (docsSection) docsSection.style.display = 'none';
@@ -474,8 +477,10 @@ function showSection(sectionId) {
     // Show requested section
     if (sectionId === 'analyzer') {
         if (analyzerSection) analyzerSection.style.display = 'block';
+        if (heroSection) heroSection.style.display = 'block';
     } else if (sectionId === 'docs') {
         if (docsSection) docsSection.style.display = 'block';
+        if (heroSection) heroSection.style.display = 'none';
     }
 }
 

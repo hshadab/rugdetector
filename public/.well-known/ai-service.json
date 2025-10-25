@@ -24,7 +24,7 @@
             "type": "x402_header",
             "header": "X-PAYMENT",
             "format": "base64-encoded JSON",
-            "description": "X402-compliant payment proof via HTTP header"
+            "description": "x402-compliant payment proof via HTTP header"
           },
           {
             "type": "json_body",
@@ -64,7 +64,7 @@
         "headers": {
           "X-PAYMENT": {
             "required": false,
-            "description": "X402 payment proof header (base64-encoded JSON payload)",
+            "description": "x402 payment proof header (base64-encoded JSON payload)",
             "format": "base64(JSON)",
             "example": "eyJzY2hlbWUiOiJleGFjdCIsIm5ldHdvcmsiOiJiYXNlIi4uLg==",
             "payload_schema": {
@@ -101,10 +101,10 @@
             }
           },
           "402": {
-            "description": "Payment required (X402-compliant)",
+            "description": "Payment required (x402-compliant)",
             "headers": {
               "X-PAYMENT-RESPONSE": "base64-encoded payment details",
-              "WWW-Authenticate": "X402"
+              "WWW-Authenticate": "x402"
             },
             "schema": {
               "success": false,
@@ -326,7 +326,7 @@
     "readme": "https://github.com/hshadab/rugdetector/blob/main/README.md",
     "x402_spec": "https://github.com/coinbase/x402",
     "examples": {
-      "javascript": "https://rugdetector.ai/#docs (X402 Protocol example)",
+      "javascript": "https://rugdetector.ai/#docs (x402 Protocol example)",
       "python": "https://rugdetector.ai/#docs (Python example)",
       "curl": "https://rugdetector.ai/#docs (cURL example)"
     }

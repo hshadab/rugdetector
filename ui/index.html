@@ -69,8 +69,8 @@
                     <span class="feature-badge">✅ Historical Tracking</span>
                     <span class="feature-badge">✅ Rate Limited</span>
                     <span class="feature-badge">✅ Replay Protected</span>
-                    <a href="https://github.com/coinbase/x402" target="_blank" class="feature-badge x402-badge" title="X402 Protocol Compliant">
-                        💳 X402 Compliant
+                    <a href="https://github.com/coinbase/x402" target="_blank" class="feature-badge x402-badge" title="x402 Protocol Compliant">
+                        💳 x402 Compliant
                     </a>
                 </div>
             </section>
@@ -287,7 +287,7 @@
             <section class="docs-section" id="docs" style="display: none;">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">X402 API Documentation</h2>
+                        <h2 class="card-title">x402 API Documentation</h2>
                         <p class="card-subtitle">Payment-gated AI service for autonomous agents</p>
                     </div>
 
@@ -318,15 +318,15 @@
 
                     <!-- X402 Protocol Support -->
                     <div class="docs-section-content">
-                        <h3 class="docs-heading">💳 X402 Protocol Support</h3>
-                        <p class="docs-text">RugDetector is fully <strong>X402-compliant</strong>, enabling native HTTP payment flow using industry-standard headers.</p>
+                        <h3 class="docs-heading">💳 x402 Protocol Support</h3>
+                        <p class="docs-text">RugDetector is fully <strong>x402-compliant</strong>, enabling native HTTP payment flow using industry-standard headers.</p>
                         <br>
 
                         <h4 style="color: #00ffff; margin-top: 1rem; margin-bottom: 0.5rem;">📡 Payment Required Response (HTTP 402)</h4>
                         <p class="docs-text">When payment is required, the API returns:</p>
                         <pre class="code-block"><code>HTTP/1.1 402 Payment Required
 X-PAYMENT-RESPONSE: eyJzY2hlbWVzIjpbeyJzY2hlbWUiOi...
-WWW-Authenticate: X402
+WWW-Authenticate: x402
 Content-Type: application/json
 
 {
@@ -377,7 +377,7 @@ curl -X POST https://rugdetector.ai/check \
 }</code></pre>
 
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0, 255, 255, 0.1); border-left: 3px solid #00ffff; border-radius: 4px;">
-                            <p class="docs-text" style="margin: 0;"><strong>ℹ️ Dual Payment Support:</strong> RugDetector accepts payment proof via both <code>X-PAYMENT</code> header (X402 standard) and JSON body <code>payment_id</code> field for maximum compatibility.</p>
+                            <p class="docs-text" style="margin: 0;"><strong>ℹ️ Dual Payment Support:</strong> RugDetector accepts payment proof via both <code>X-PAYMENT</code> header (x402 standard) and JSON body <code>payment_id</code> field for maximum compatibility.</p>
                         </div>
                     </div>
 
@@ -385,7 +385,7 @@ curl -X POST https://rugdetector.ai/check \
                     <div class="docs-section-content">
                         <h3 class="docs-heading">🔍 Service Discovery</h3>
                         <pre class="code-block"><code>GET /.well-known/ai-service.json</code></pre>
-                        <p class="docs-text">Returns X402 manifest with pricing and capabilities</p>
+                        <p class="docs-text">Returns x402 manifest with pricing and capabilities</p>
                     </div>
 
                     <!-- Request Format -->
@@ -551,7 +551,7 @@ print('Risk Score:', data['data']['riskScore'])</code></pre>
                             </div>
 
                             <div class="code-example">
-                                <div class="code-example-header">X402 Protocol (JavaScript)</div>
+                                <div class="code-example-header">x402 Protocol (JavaScript)</div>
                                 <pre class="code-block"><code>// Create X-PAYMENT header
 const paymentPayload = {
   scheme: 'exact',
@@ -597,10 +597,10 @@ if (response.status === 402) {
                                 📖 Full Documentation on GitHub
                             </a>
                             <a href="https://github.com/coinbase/x402" class="resource-link" target="_blank">
-                                💳 X402 Protocol Specification
+                                💳 x402 Protocol Specification
                             </a>
                             <a href="/.well-known/ai-service.json" class="resource-link" target="_blank">
-                                🔍 X402 Service Manifest
+                                🔍 x402 Service Manifest
                             </a>
                             <a href="/health" class="resource-link" target="_blank">
                                 💚 Health Check Endpoint
@@ -620,12 +620,12 @@ if (response.status === 402) {
                     Built with <span class="gradient-text">AI</span> for the DeFi community
                 </p>
                 <div class="footer-badges">
-                    <a href="https://github.com/coinbase/x402" target="_blank" class="footer-badge" title="X402 Protocol - HTTP-native payments">
+                    <a href="https://github.com/coinbase/x402" target="_blank" class="footer-badge" title="x402 Protocol - HTTP-native payments">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                             <line x1="1" y1="10" x2="23" y2="10"></line>
                         </svg>
-                        <span>X402 Compliant</span>
+                        <span>x402 Compliant</span>
                     </a>
                     <span class="footer-badge">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

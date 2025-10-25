@@ -1,48 +1,30 @@
-# Node.js
-node_modules
-npm-debug.log
-
-# Python
-__pycache__
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 *.pyo
-*.pyd
-.Python
-*.egg-info
-.pytest_cache
-.mypy_cache
+
+# Node
+node_modules/
+npm-debug.log*
 
 # Git
-.git
+.git/
 .gitignore
-.gitattributes
+
+# IDE
+.vscode/
+.idea/
+
+# Local config
+.render-config
+.env.local
 
 # Documentation
 *.md
-docs/
-JOLT_ATLAS_STATUS.md
-SECURITY_IMPROVEMENTS.md
-REAL_FEATURES_UPGRADE.md
-ADVANCED_ANALYTICS_COMPLETE.md
+!README.md
 
-# IDE
-.vscode
-.idea
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Build artifacts (keep only release binaries)
-zkml-jolt-atlas/target/debug
-zkml-jolt-atlas/target/doc
-zkml-jolt-atlas/.git
-
-# Logs
-logs/*.log
-
-# Environment
-.env.local
-.env.development
+# Test files
+test/
+*.test.js

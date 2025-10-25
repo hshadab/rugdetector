@@ -2,9 +2,11 @@
 
 ## 🔑 Your Credentials
 
-**API Key:** `rnd_1qYdkGuHRHGB13aorQUdxwaE9GE2`
+**API Key:** Stored in `.render-config` (gitignored for security)
 **Dashboard:** https://dashboard.render.com/blueprint/exs-d3tq77ndiees73dp43p0
 **Live Site:** https://rugdetector.ai
+
+> **Note:** Your API key is stored locally in `.render-config` and is NOT committed to the repository for security reasons.
 
 ---
 
@@ -21,7 +23,10 @@ open https://dashboard.render.com/blueprint/exs-d3tq77ndiees73dp43p0
 
 ### Check Deployment Status
 ```bash
-curl -H "Authorization: Bearer rnd_1qYdkGuHRHGB13aorQUdxwaE9GE2" \
+# Load API key from .render-config
+source .render-config
+
+curl -H "Authorization: Bearer $RENDER_API_KEY" \
   https://api.render.com/v1/services | jq '.[] | select(.name=="rugdetector")'
 ```
 
@@ -65,8 +70,9 @@ curl https://rugdetector.ai/health | jq '.'
 # Install globally
 npm install -g render
 
-# Login with API key
-render login --api-key rnd_1qYdkGuHRHGB13aorQUdxwaE9GE2
+# Login with API key (get from .render-config)
+source .render-config
+render login --api-key $RENDER_API_KEY
 
 # Common commands
 render services list                    # List all services
@@ -220,8 +226,9 @@ open https://dashboard.render.com/blueprint/exs-d3tq77ndiees73dp43p0
 # Check health
 curl https://rugdetector.ai/health
 
-# View service info
-curl -H "Authorization: Bearer rnd_1qYdkGuHRHGB13aorQUdxwaE9GE2" \
+# View service info (requires API key from .render-config)
+source .render-config
+curl -H "Authorization: Bearer $RENDER_API_KEY" \
   https://api.render.com/v1/services | jq '.'
 
 # Test X402

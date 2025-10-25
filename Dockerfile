@@ -26,6 +26,9 @@ COPY requirements.txt ./
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+# Cache-busting ARG to force rebuild of application code layer
+ARG CACHE_BUST=1
+
 # Copy application code
 COPY . .
 

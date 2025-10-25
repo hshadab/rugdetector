@@ -242,7 +242,7 @@ class DEXLiquidityAnalyzer:
             locked_percentage = total_locked / total_supply if total_supply > 0 else 0
 
             return {
-                'is_locked': locked_percentage > 0.01,  # >1% locked
+                'is_locked': 1 if locked_percentage > 0.01 else 0,  # >1% locked
                 'locked_percentage': locked_percentage,
                 'total_locked': total_locked,
                 'total_supply': total_supply

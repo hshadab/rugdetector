@@ -537,7 +537,7 @@ class HistoricalAnalyzer:
                 'total_transfers': len(transfers),
                 'ownership_changes': ownership_changes,
                 'large_transfers': large_transfers,
-                'suspicious_patterns': suspicious,
+                'suspicious_patterns': 1 if suspicious else 0,
                 'transfer_velocity': velocity,
                 'unique_recipients': len(recipient_counts),
                 'max_transfers_to_single_address': max_transfers_to_one_addr

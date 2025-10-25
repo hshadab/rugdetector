@@ -26,9 +26,6 @@ COPY requirements.txt ./
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Build and export ONNX model without ZipMap (compatible with onnxruntime-node)
-RUN python3 training/train_model.py
-
 # Cache-busting ARG to force rebuild of application code layer
 ARG CACHE_BUST=1
 
@@ -40,6 +37,9 @@ RUN mkdir -p logs
 
 # Set permissions for zkML binary (if it exists)
 RUN chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core 2>/dev/null || true
+
+# Rewrite existing ONNX to remove ZipMap (non-tensor outputs) for Node compatibility
+RUN python3 model/strip_zipmap.py
 
 # Expose port
 EXPOSE 3000

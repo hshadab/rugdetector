@@ -88,6 +88,7 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     service: 'rugdetector',
     version: '1.0.0',
+    commit: 'be5cd3c-onnx-fix',  // ONNX boolean fix deployed
     uptime: process.uptime()
   });
 });

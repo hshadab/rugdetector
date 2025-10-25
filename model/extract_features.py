@@ -445,7 +445,7 @@ def extract_features_real(contract_address: str, blockchain: str = 'ethereum') -
     features['ownerContractAge'] = contract_age_days
     features['ownerIsContract'] = 0  # Would need to check if owner has bytecode
     features['ownerBlacklisted'] = 0  # Would need blacklist database
-    features['ownerVerified'] = source_info.get('source_code', '') != ''
+    features['ownerVerified'] = 1 if source_info.get('source_code', '') != '' else 0
 
     # ===== ADVANCED ANALYTICS INTEGRATION =====
     # Try to use advanced DEX + holder analytics if available

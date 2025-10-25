@@ -26,6 +26,9 @@ COPY requirements.txt ./
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+# Build and export ONNX model without ZipMap (compatible with onnxruntime-node)
+RUN python3 training/train_model.py
+
 # Cache-busting ARG to force rebuild of application code layer
 ARG CACHE_BUST=1
 

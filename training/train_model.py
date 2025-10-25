@@ -299,7 +299,13 @@ def train_model():
     print("=" * 60)
 
     initial_type = [('float_input', FloatTensorType([None, 60]))]
-    onnx_model = convert_sklearn(model, initial_types=initial_type, target_opset=15)
+    # Disable ZipMap so probabilities are a tensor (compatible with onnxruntime-node)
+    onnx_model = convert_sklearn(
+        model,
+        initial_types=initial_type,
+        target_opset=15,
+        options={id(model): {"zipmap": False}}
+    )
 
     # Save ONNX model
     onnx_path = os.path.join(os.path.dirname(__file__), '../model/rugdetector_v1.onnx')

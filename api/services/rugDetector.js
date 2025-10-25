@@ -217,15 +217,32 @@ function convertFeaturesToArray(features) {
 
     // Convert boolean to number
     if (typeof value === 'boolean') {
+      console.warn(`[RugDetector] WARNING: Boolean detected for ${featureName}: ${value}`);
       return value ? 1 : 0;
     }
 
     // Return numeric value
-    return Number(value);
+    const numValue = Number(value);
+
+    // Debug: Check for NaN or non-numeric
+    if (isNaN(numValue)) {
+      console.error(`[RugDetector] ERROR: Non-numeric value for ${featureName}: ${value} (type: ${typeof value})`);
+      return 0;
+    }
+
+    return numValue;
   });
 
   if (featureArray.length !== 60) {
     throw new Error(`Expected 60 features, got ${featureArray.length}`);
+  }
+
+  // Debug: Log feature array types
+  console.log(`[RugDetector] Feature array length: ${featureArray.length}`);
+  const typeCheck = featureArray.map((v, i) => ({ index: i, type: typeof v, value: v }))
+    .filter(item => typeof item.value !== 'number');
+  if (typeCheck.length > 0) {
+    console.error(`[RugDetector] NON-NUMERIC VALUES DETECTED:`, JSON.stringify(typeCheck));
   }
 
   return featureArray;

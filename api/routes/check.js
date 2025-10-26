@@ -239,8 +239,35 @@ router.post('/', async (req, res) => {
         proof_id: 'unavailable',
         protocol: 'jolt-atlas-v1',
         verifiable: false,
+        verified: false,
         error: 'Proof generation failed'
       };
+    }
+
+    // Step 6: Verify zkML proof locally
+    let verification = { valid: false, reason: 'Not verified' };
+    if (zkmlProof && zkmlProof.proof_id !== 'unavailable' && zkmlProof.proof_id !== 'error') {
+      console.log(`[Check] Verifying zkML proof ${zkmlProof.proof_id.slice(0, 16)}...`);
+      try {
+        verification = await zkml.verifyProof(zkmlProof, features, analysis);
+        console.log(`[Check] Proof verification result: ${verification.valid ? '✅ VALID' : '❌ INVALID'}`);
+
+        // Add verification result to proof object
+        zkmlProof.verified = verification.valid;
+        zkmlProof.verified_at = verification.verified_at;
+
+        if (!verification.valid) {
+          console.warn(`[Check] ⚠️ WARNING: Proof verification failed: ${verification.reason}`);
+          zkmlProof.verification_warning = verification.reason;
+        }
+      } catch (verifyError) {
+        console.error('[Check] Proof verification error:', verifyError.message);
+        zkmlProof.verified = false;
+        zkmlProof.verification_error = verifyError.message;
+      }
+    } else {
+      console.log(`[Check] Skipping verification - no valid proof to verify`);
+      zkmlProof.verified = false;
     }
 
     // Return successful response with zkML proof

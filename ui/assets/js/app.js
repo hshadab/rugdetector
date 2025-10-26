@@ -126,6 +126,11 @@ function displayResults(data) {
     detailAddress.textContent = formatAddress(data.contract_address);
     detailBlockchain.textContent = capitalizeFirst(data.blockchain);
     detailTimestamp.textContent = formatTimestamp(data.analysis_timestamp);
+
+    // Update zkML proof details
+    if (data.zkml) {
+        displayZkmlProof(data.zkml);
+    }
 }
 
 // Update risk score display
@@ -520,6 +525,61 @@ function handleHashChange() {
         });
     }
 }
+
+// Display zkML proof details
+function displayZkmlProof(zkml) {
+    // Store proof globally for "View Raw Proof" button
+    window.currentZkmlProof = zkml;
+
+    // Update status badge
+    const statusIcon = document.getElementById('zkmlStatusIcon');
+    const statusText = document.getElementById('zkmlStatusText');
+
+    if (zkml.verified === true) {
+        statusIcon.textContent = '✅';
+        statusText.textContent = 'Proof Verified';
+        statusText.style.color = '#00ff88';
+    } else if (zkml.verified === false) {
+        statusIcon.textContent = '⚠️';
+        statusText.textContent = 'Verification Failed';
+        statusText.style.color = '#ff6b6b';
+    } else {
+        statusIcon.textContent = '❌';
+        statusText.textContent = 'Not Verified';
+        statusText.style.color = '#888';
+    }
+
+    // Update proof details
+    document.getElementById('zkmlProofId').textContent = zkml.proof_id || 'N/A';
+    document.getElementById('zkmlProtocol').textContent = zkml.protocol || 'N/A';
+    document.getElementById('zkmlVerified').textContent = zkml.verified === true ? '✅ Yes' : zkml.verified === false ? '❌ No' : 'N/A';
+    document.getElementById('zkmlVerifiedAt').textContent = zkml.verified_at ? formatTimestamp(zkml.verified_at) : 'N/A';
+    document.getElementById('zkmlProofSize').textContent = zkml.proof_size_bytes ? `${(zkml.proof_size_bytes / 1024).toFixed(2)} KB` : 'N/A';
+    document.getElementById('zkmlVerifiable').textContent = zkml.verifiable ? '✅ Yes' : '❌ No';
+
+    // Show "View Raw Proof" button if proof exists
+    const viewProofBtn = document.getElementById('viewProofBtn');
+    if (zkml.proof_id && zkml.proof_id !== 'unavailable' && zkml.proof_id !== 'error') {
+        viewProofBtn.style.display = 'block';
+    }
+}
+
+// Setup View Raw Proof button
+document.getElementById('viewProofBtn')?.addEventListener('click', function() {
+    const rawProofContainer = document.getElementById('rawProofContainer');
+    const rawProofData = document.getElementById('rawProofData');
+
+    if (rawProofContainer.style.display === 'none') {
+        // Show raw proof
+        rawProofData.textContent = JSON.stringify(window.currentZkmlProof, null, 2);
+        rawProofContainer.style.display = 'block';
+        this.textContent = 'Hide Raw Proof Data';
+    } else {
+        // Hide raw proof
+        rawProofContainer.style.display = 'none';
+        this.textContent = 'View Raw Proof Data';
+    }
+});
 
 console.log('🚀 RugDetector UI initialized');
 console.log('API endpoint:', API_ENDPOINT);

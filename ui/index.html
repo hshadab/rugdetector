@@ -260,6 +260,70 @@
                         </div>
                     </div>
 
+                    <!-- zkML Proof Details -->
+                    <div class="card card-zkml-proof">
+                        <div class="card-header">
+                            <h3 class="card-title">🔐 zkML Proof</h3>
+                            <p class="card-subtitle">Cryptographic proof of correct AI execution</p>
+                        </div>
+                        <div class="zkml-proof-container">
+                            <!-- Verification Status Badge -->
+                            <div class="zkml-status" id="zkmlStatus">
+                                <div class="status-indicator">
+                                    <span class="status-icon" id="zkmlStatusIcon">⏳</span>
+                                    <span class="status-text" id="zkmlStatusText">Generating proof...</span>
+                                </div>
+                            </div>
+
+                            <!-- Proof Details Grid -->
+                            <div class="zkml-details-grid">
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Proof ID:</span>
+                                    <span class="zkml-detail-value" id="zkmlProofId">N/A</span>
+                                </div>
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Protocol:</span>
+                                    <span class="zkml-detail-value" id="zkmlProtocol">N/A</span>
+                                </div>
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Verified:</span>
+                                    <span class="zkml-detail-value" id="zkmlVerified">N/A</span>
+                                </div>
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Verified At:</span>
+                                    <span class="zkml-detail-value" id="zkmlVerifiedAt">N/A</span>
+                                </div>
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Proof Size:</span>
+                                    <span class="zkml-detail-value" id="zkmlProofSize">N/A</span>
+                                </div>
+                                <div class="zkml-detail-item">
+                                    <span class="zkml-detail-label">Verifiable:</span>
+                                    <span class="zkml-detail-value" id="zkmlVerifiable">N/A</span>
+                                </div>
+                            </div>
+
+                            <!-- Proof Explanation -->
+                            <div class="zkml-explanation">
+                                <p style="margin: 0; color: #888; font-size: 0.9rem;">
+                                    ℹ️ This cryptographic proof guarantees that the AI model ran correctly on the input features.
+                                    The proof was generated using Jolt-Atlas zkML and verified locally before being returned.
+                                </p>
+                            </div>
+
+                            <!-- View Raw Proof Button -->
+                            <button class="btn-secondary" id="viewProofBtn" style="display: none; margin-top: 1rem;">
+                                View Raw Proof Data
+                            </button>
+
+                            <!-- Raw Proof Modal/Expandable -->
+                            <div id="rawProofContainer" style="display: none; margin-top: 1rem;">
+                                <h4 style="color: #00ffff; margin-bottom: 0.5rem;">Raw Proof JSON</h4>
+                                <pre class="code-block" style="max-height: 300px; overflow-y: auto;"><code id="rawProofData"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Contract Details -->
                     <div class="card card-details">
                         <div class="card-header">

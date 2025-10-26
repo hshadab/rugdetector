@@ -1,89 +1,129 @@
-// zkML Proof Generation and Verification
-// Implements cryptographic proofs for ML inference using Jolt/Atlas architecture
+// zkML Proof Generation and Verification using Jolt-Atlas
+// Full Rust prover implementation - NO fallback approaches
 
-const crypto = require('crypto');
+const { spawn } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
-const { spawn } = require('child_process');
+const crypto = require('crypto');
 
-const MODEL_PATH = path.join(__dirname, '../../model/rugdetector_v1.onnx');
-const PYTHON_PATH = process.env.PYTHON_PATH || 'python3';
-const ZKML_WRAPPER_PATH = path.join(__dirname, '../../zkml_prover_wrapper.py');
+const MODEL_PATH = path.join(__dirname, '../../model/zkml_rugdetector.onnx');  // Use zkML model
+const PROVER_BINARY = path.join(__dirname, '../../zkml-jolt-atlas/target/release/zkml-jolt-core');
+const TEMP_DIR = path.join(__dirname, '../../.zkml_temp');
+
+// Ensure temp directory exists
+async function ensureTempDir() {
+  try {
+    await fs.mkdir(TEMP_DIR, { recursive: true });
+  } catch (error) {
+    console.error('[zkML] Failed to create temp directory:', error);
+  }
+}
 
 /**
- * Generate zkML proof for ML inference
- * Creates cryptographic commitments for inputs, outputs, and model
+ * Generate zkML proof for ML inference using Jolt-Atlas
+ * Creates full cryptographic proof via Rust prover
  *
- * @param {Object} features - Input features used for inference
+ * @param {Array|Object} features - Input features (18 element array or object with values)
  * @param {Object} result - Inference result (riskScore, probabilities, etc)
  * @returns {Promise<Object>} zkML proof object
  */
 async function generateProof(features, result) {
   try {
+    await ensureTempDir();
+
     const timestamp = Math.floor(Date.now() / 1000);
+    const proofId = crypto.randomBytes(16).toString('hex');
 
-    // 1. Compute input commitment (hash of features)
-    const inputCommitment = hashData(features);
+    // Prepare input data - convert features object/array to array
+    const featureArray = Array.isArray(features) ? features : Object.values(features);
 
-    // 2. Compute output commitment (hash of results)
-    const outputCommitment = hashData({
-      riskScore: result.riskScore,
-      riskCategory: result.riskCategory,
-      confidence: result.confidence
+    // Create temporary input file
+    const inputPath = path.join(TEMP_DIR, `input_${proofId}.json`);
+    const outputPath = path.join(TEMP_DIR, `proof_${proofId}.json`);
+
+    await fs.writeFile(inputPath, JSON.stringify(featureArray));
+
+    console.log(`[zkML] Generating Jolt-Atlas proof ${proofId.slice(0, 16)}...`);
+    console.log(`[zkML] Input: ${featureArray.length} features`);
+    console.log(`[zkML] Model: ${MODEL_PATH}`);
+
+    // Call Rust prover
+    const proof = await new Promise((resolve, reject) => {
+      const prover = spawn(PROVER_BINARY, [
+        'prove',
+        '--model', MODEL_PATH,
+        '--input', inputPath,
+        '--shape', `1,${featureArray.length}`,
+        '--output', outputPath
+      ]);
+
+      let stdout = '';
+      let stderr = '';
+
+      prover.stdout.on('data', (data) => {
+        stdout += data.toString();
+        console.log(`[zkML Prover] ${data.toString().trim()}`);
+      });
+
+      prover.stderr.on('data', (data) => {
+        stderr += data.toString();
+        console.error(`[zkML Prover Error] ${data.toString().trim()}`);
+      });
+
+      prover.on('close', async (code) => {
+        if (code !== 0) {
+          reject(new Error(`Prover exited with code ${code}: ${stderr}`));
+          return;
+        }
+
+        try {
+          // Read the proof file
+          const proofJson = await fs.readFile(outputPath, 'utf8');
+          const proofData = JSON.parse(proofJson);
+
+          // Clean up temp files
+          await fs.unlink(inputPath).catch(() => {});
+          await fs.unlink(outputPath).catch(() => {});
+
+          resolve(proofData);
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      // Timeout after 2 minutes
+      setTimeout(() => {
+        prover.kill();
+        reject(new Error('Proof generation timed out after 2 minutes'));
+      }, 120000);
     });
 
-    // 3. Compute model hash
-    const modelHash = await hashModelFile();
+    console.log(`[zkML] Jolt-Atlas proof generated: ${proof.proof_id?.slice(0, 16)}...`);
 
-    // 4. Create proof data structure
-    const proofData = {
-      input_commitment: inputCommitment,
-      output_commitment: outputCommitment,
-      model_hash: modelHash,
-      timestamp: timestamp,
-      protocol: 'jolt-atlas-v1'
-    };
-
-    // 5. Generate proof ID (hash of all proof data)
-    const proofId = hashData(proofData);
-
-    // 6. Create full proof object
-    const proof = {
-      proof_id: proofId,
-      protocol: 'jolt-atlas-v1',
-      proof_system: 'lookup-based (Lasso commitment scheme)',
-      input_commitment: inputCommitment,
-      output_commitment: outputCommitment,
-      model_hash: modelHash,
-      timestamp: timestamp,
-      verifiable: true,
-      zkml_enabled: true,
-      proof_type: 'lookup_argument',
-      proof_size_bytes: JSON.stringify(proofData).length,
-      description: 'Jolt-Atlas zkML proof - lookup-based verification (not SNARK)',
-      note: 'Uses cryptographic commitments compatible with Jolt-Atlas architecture'
-    };
-
-    const shortId = proofId.slice(0, 16);
-    console.log(`[zkML] Generated Jolt-Atlas proof ${shortId}... (${proof.proof_size_bytes} bytes)`);
+    // Add additional metadata
+    proof.proof_size_bytes = JSON.stringify(proof).length;
+    proof.generated_at = new Date(timestamp * 1000).toISOString();
 
     return proof;
 
   } catch (error) {
-    console.error(`[zkML] Failed to generate proof:`, error);
-    // Return minimal proof on error
+    console.error(`[zkML] Proof generation failed:`, error);
+
+    // Return error proof (do NOT fall back to SHA-256)
     return {
       proof_id: 'error',
       protocol: 'jolt-atlas-v1',
       verifiable: false,
-      error: error.message
+      zkml_enabled: false,
+      error: error.message,
+      note: 'Proof generation failed - no fallback available'
     };
   }
 }
 
 /**
- * Verify zkML proof
- * Reconstructs commitments and verifies proof integrity
+ * Verify zkML proof using Jolt-Atlas
+ * Calls Rust verifier
  *
  * @param {Object} proof - The proof to verify
  * @param {Object} features - Original input features
@@ -92,70 +132,63 @@ async function generateProof(features, result) {
  */
 async function verifyProof(proof, features, result) {
   try {
-    // 1. Recompute input commitment
-    const expectedInputCommitment = hashData(features);
-    if (proof.input_commitment !== expectedInputCommitment) {
-      return {
-        valid: false,
-        reason: 'Input commitment mismatch - features were modified'
-      };
-    }
+    await ensureTempDir();
 
-    // 2. Recompute output commitment
-    const expectedOutputCommitment = hashData({
-      riskScore: result.riskScore,
-      riskCategory: result.riskCategory,
-      confidence: result.confidence
+    const proofId = proof.proof_id || 'unknown';
+    const proofPath = path.join(TEMP_DIR, `verify_${proofId}_${Date.now()}.json`);
+
+    // Write proof to temp file
+    await fs.writeFile(proofPath, JSON.stringify(proof));
+
+    console.log(`[zkML] Verifying proof ${proofId.slice(0, 16)}...`);
+
+    // Call Rust verifier
+    const valid = await new Promise((resolve, reject) => {
+      const verifier = spawn(PROVER_BINARY, [
+        'verify',
+        '--proof', proofPath
+      ]);
+
+      let stdout = '';
+      let stderr = '';
+
+      verifier.stdout.on('data', (data) => {
+        stdout += data.toString();
+        console.log(`[zkML Verifier] ${data.toString().trim()}`);
+      });
+
+      verifier.stderr.on('data', (data) => {
+        stderr += data.toString();
+        console.error(`[zkML Verifier Error] ${data.toString().trim()}`);
+      });
+
+      verifier.on('close', async (code) => {
+        // Clean up temp file
+        await fs.unlink(proofPath).catch(() => {});
+
+        // Exit code 0 = valid, 1 = invalid, other = error
+        if (code === 0) {
+          resolve(true);
+        } else if (code === 1) {
+          resolve(false);
+        } else {
+          reject(new Error(`Verifier exited with code ${code}: ${stderr}`));
+        }
+      });
+
+      // Timeout after 30 seconds
+      setTimeout(() => {
+        verifier.kill();
+        reject(new Error('Proof verification timed out after 30 seconds'));
+      }, 30000);
     });
-    if (proof.output_commitment !== expectedOutputCommitment) {
-      return {
-        valid: false,
-        reason: 'Output commitment mismatch - results were modified'
-      };
-    }
 
-    // 3. Verify model hash
-    const expectedModelHash = await hashModelFile();
-    if (proof.model_hash !== expectedModelHash) {
-      return {
-        valid: false,
-        reason: 'Model hash mismatch - different model was used'
-      };
-    }
-
-    // 4. Reconstruct proof ID
-    const proofData = {
-      input_commitment: proof.input_commitment,
-      output_commitment: proof.output_commitment,
-      model_hash: proof.model_hash,
-      timestamp: proof.timestamp,
-      protocol: proof.protocol
-    };
-    const expectedProofId = hashData(proofData);
-
-    if (proof.proof_id !== expectedProofId) {
-      return {
-        valid: false,
-        reason: 'Proof ID mismatch - proof was tampered with'
-      };
-    }
-
-    // 5. Check timestamp (prevent very old proofs)
-    const now = Math.floor(Date.now() / 1000);
-    const age = now - proof.timestamp;
-    if (age > 86400 * 30) { // 30 days
-      return {
-        valid: false,
-        reason: 'Proof is too old (> 30 days)'
-      };
-    }
-
-    const shortId = proof.proof_id.slice(0, 16);
-    console.log(`[zkML] Proof ${shortId}... verified successfully`);
+    console.log(`[zkML] Proof verification result: ${valid ? 'VALID' : 'INVALID'}`);
 
     return {
-      valid: true,
-      verified_at: new Date().toISOString()
+      valid: valid,
+      verified_at: new Date().toISOString(),
+      reason: valid ? undefined : 'Proof verification failed'
     };
 
   } catch (error) {
@@ -164,30 +197,6 @@ async function verifyProof(proof, features, result) {
       valid: false,
       reason: `Verification error: ${error.message}`
     };
-  }
-}
-
-/**
- * Hash data using SHA-256
- * @param {Object} data - Data to hash
- * @returns {string} Hex-encoded hash
- */
-function hashData(data) {
-  const jsonString = JSON.stringify(data, Object.keys(data).sort());
-  return crypto.createHash('sha256').update(jsonString).digest('hex');
-}
-
-/**
- * Hash the ONNX model file
- * @returns {Promise<string>} Hex-encoded hash of model file
- */
-async function hashModelFile() {
-  try {
-    const modelBytes = await fs.readFile(MODEL_PATH);
-    return crypto.createHash('sha256').update(modelBytes).digest('hex');
-  } catch (error) {
-    console.error(`[zkML] Failed to hash model file:`, error);
-    return 'model_hash_unavailable';
   }
 }
 

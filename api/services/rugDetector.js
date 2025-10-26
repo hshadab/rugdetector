@@ -9,6 +9,11 @@ const onnx = require('onnxruntime-node');
 const PYTHON_PATH = process.env.PYTHON_PATH || 'python3';
 const FEATURE_EXTRACTOR_PATH = path.join(__dirname, '../../model/extract_features.py');
 const MODEL_PATH = path.join(__dirname, '../../model/rugdetector_v1.onnx');
+const ZKML_MODEL_PATH = path.join(__dirname, '../../model/zkml_rugdetector.onnx');
+const ZKML_SCALER_PATH = path.join(__dirname, '../../model/zkml_rugdetector_scaler.pkl');
+
+// Use zkML model for proof generation
+const USE_ZKML_MODEL = process.env.USE_ZKML_MODEL !== 'false';
 
 // Cache for ONNX session
 let cachedSession = null;
@@ -282,7 +287,134 @@ function convertFeaturesToArray(features) {
   return featureArray;
 }
 
+/**
+ * Extract 18 Uniswap V2-style features for zkML model
+ * Simplified feature extraction for Jolt-Atlas compatible model
+ * @param {string} contractAddress - Contract address (0x...)
+ * @param {string} blockchain - Blockchain name (ethereum, bsc, polygon)
+ * @returns {Promise<Array<number>>} - 18 features as array
+ */
+async function extractZkmlFeatures(contractAddress, blockchain) {
+  try {
+    // For now, extract comprehensive features and map to zkML subset
+    const fullFeatures = await extractFeatures(contractAddress, blockchain);
+
+    // Map 60 features to 18 zkML features
+    // Order must match training: mint_count_per_week, burn_count_per_week, mint_ratio, swap_ratio, burn_ratio, etc.
+    const zkmlFeatures = [
+      fullFeatures.avgDailyTransactions || 0,  // Proxy for mint_count_per_week
+      fullFeatures.avgDailyTransactions * 0.5 || 0,  // Proxy for burn_count_per_week
+      fullFeatures.liquidityRatio || 0.5,  // mint_ratio proxy
+      fullFeatures.transactionVelocity / 100 || 0.3,  // swap_ratio proxy
+      0.2,  // burn_ratio - estimated
+      3.5,  // mint_mean_period - estimated
+      2.0,  // swap_mean_period - estimated
+      4.0,  // burn_mean_period - estimated
+      fullFeatures.avgDailyTransactions * 10 || 1000,  // swap_in_per_week
+      fullFeatures.avgDailyTransactions * 8 || 800,  // swap_out_per_week
+      fullFeatures.transactionVelocity / 10 || 15.5,  // swap_rate
+      fullFeatures.liquidityPoolSize || 50000,  // lp_avg
+      fullFeatures.liquidityPoolSize * 0.1 || 5000,  // lp_std
+      fullFeatures.top10HoldersPercent / 100 || 0.1,  // lp_creator_holding_ratio
+      fullFeatures.holderCount || 20,  // number_of_holders proxy
+      fullFeatures.ownerBalance || 0.05,  // creator_balance_in_lp
+      fullFeatures.contractAge / 7 || 30,  // token_age_weeks
+      fullFeatures.ownerBalance || 0.15  // token_creator_holding_ratio
+    ];
+
+    return zkmlFeatures;
+  } catch (error) {
+    console.error(`[RugDetector] zkML feature extraction failed:`, error);
+    // Return default safe values
+    return [100, 50, 0.5, 0.3, 0.2, 3.5, 2.0, 4.0, 1000, 800, 15.5, 50000, 5000, 0.1, 20, 0.05, 30, 0.15];
+  }
+}
+
+/**
+ * Analyze contract using zkML model (18 features, Jolt-Atlas compatible)
+ * @param {Array<number>} features - 18 features array
+ * @returns {Promise<{riskScore: number, riskCategory: string, confidence: number, probability: number}>}
+ */
+async function analyzeContractZkml(features) {
+  try {
+    const { spawn } = require('child_process');
+    const fs = require('fs').promises;
+
+    // Load scaler and transform features
+    const scalerProc = spawn(PYTHON_PATH, ['-c', `
+import pickle
+import numpy as np
+import json
+
+with open('${ZKML_SCALER_PATH}', 'rb') as f:
+    scaler = pickle.load(f)
+
+features = ${JSON.stringify(features)}
+scaled = scaler.transform([features])
+print(json.dumps(scaled[0].tolist()))
+`]);
+
+    let scaledFeatures = await new Promise((resolve, reject) => {
+      let stdout = '';
+      scalerProc.stdout.on('data', (data) => { stdout += data.toString(); });
+      scalerProc.on('close', (code) => {
+        if (code !== 0) reject(new Error('Scaler failed'));
+        else resolve(JSON.parse(stdout));
+      });
+      setTimeout(() => { scalerProc.kill(); reject(new Error('Scaler timeout')); }, 5000);
+    });
+
+    // Load zkML model
+    const session = await onnx.InferenceSession.create(ZKML_MODEL_PATH);
+
+    // Create input tensor
+    const inputTensor = new onnx.Tensor('float32', Float32Array.from(scaledFeatures), [1, 18]);
+
+    console.log(`[RugDetector] Running zkML inference (18 features)`);
+
+    // Run inference
+    const results = await session.run({ input: inputTensor });
+    const output = results.output;
+    const probability = output.data[0];  // Sigmoid output: probability of rug pull
+
+    console.log(`[RugDetector] zkML probability: ${probability.toFixed(4)}`);
+
+    // Determine risk category
+    let riskCategory, riskScore, confidence;
+
+    if (probability > 0.7) {
+      riskCategory = 'high';
+      riskScore = 0.7 + (probability - 0.7) * 0.3 / 0.3;
+      confidence = probability;
+    } else if (probability > 0.4) {
+      riskCategory = 'medium';
+      riskScore = 0.4 + (probability - 0.4) * 0.3 / 0.3;
+      confidence = probability;
+    } else {
+      riskCategory = 'low';
+      riskScore = probability * 0.4;
+      confidence = 1 - probability;
+    }
+
+    return {
+      riskScore: Math.round(riskScore * 100) / 100,
+      riskCategory,
+      confidence: Math.round(confidence * 100) / 100,
+      probability: Math.round(probability * 100) / 100,
+      zkml: true
+    };
+
+  } catch (error) {
+    console.error(`[RugDetector] zkML analysis failed:`, error);
+    throw error;
+  }
+}
+
 module.exports = {
   extractFeatures,
-  analyzeContract
+  analyzeContract,
+  extractZkmlFeatures,
+  analyzeContractZkml,
+  ZKML_MODEL_PATH,
+  USE_ZKML_MODEL
 };

@@ -178,10 +178,18 @@ router.post('/', async (req, res) => {
 
     // Step 2: Extract features from contract
     console.log(`[Check] Extracting features from ${contract_address} on ${blockchain}`);
-    let features;
+    let features, zkmlFeatures;
     try {
-      features = await rugDetector.extractFeatures(contract_address, blockchain);
-      console.log(`[Check] Extracted ${Object.keys(features).length} features`);
+      // Use zkML model if enabled
+      if (rugDetector.USE_ZKML_MODEL) {
+        console.log(`[Check] Using zkML model (18 features)`);
+        zkmlFeatures = await rugDetector.extractZkmlFeatures(contract_address, blockchain);
+        console.log(`[Check] Extracted ${zkmlFeatures.length} zkML features`);
+        features = zkmlFeatures;  // For backward compatibility
+      } else {
+        features = await rugDetector.extractFeatures(contract_address, blockchain);
+        console.log(`[Check] Extracted ${Object.keys(features).length} features`);
+      }
     } catch (extractError) {
       console.error('[Check] Feature extraction error:', extractError.message);
       return res.status(500).json({
@@ -194,7 +202,11 @@ router.post('/', async (req, res) => {
     console.log(`[Check] Running ONNX inference`);
     let analysis;
     try {
-      analysis = await rugDetector.analyzeContract(features);
+      if (rugDetector.USE_ZKML_MODEL) {
+        analysis = await rugDetector.analyzeContractZkml(zkmlFeatures);
+      } else {
+        analysis = await rugDetector.analyzeContract(features);
+      }
       console.log(`[Check] Analysis complete: ${analysis.riskCategory} risk (score: ${analysis.riskScore})`);
     } catch (analysisError) {
       console.error('[Check] Analysis error:', analysisError.message);

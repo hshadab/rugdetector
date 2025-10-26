@@ -1,0 +1,25 @@
+pytorch2.8.0:±
+*
+input
+weights/Mul_output_0/Mul"Mul
+b
+/Mul_output_0/ReduceSum_output_0
+/ReduceSum"	ReduceSum*
+axes@ÿÿÿÿÿÿÿÿÿ *
+keepdims 
+5
+/ReduceSum_output_0
+bias/Add_output_0/Add"Add
+*
+/Add_output_0output/Sigmoid"Sigmoid
+main_graph*WBweightsJH#¬è½Ês?W¹?j(o¾\ÍK¾@ŸD¾¤Ô-?ð†©¼¼}*>taA¾e_uA)6™?)úÓ>îZ?ááó¾â)½€L…> •>*BbiasJ¬^ã@Z!
+input
+
+
+batch_size
+b"
+output
+
+
+batch_size
+B

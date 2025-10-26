@@ -48,7 +48,7 @@ def main():
         outputs=[prob_output_name],
         name='ZipMap_To_Tensor'
     )
-    nodes.insert(ipmap, identity_node)
+    nodes.insert(zipmap_idx, identity_node)
     del m.graph.node[:]  # clear and reassign
     m.graph.node.extend(nodes)
 

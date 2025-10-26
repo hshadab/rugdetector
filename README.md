@@ -7,32 +7,40 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 ## Features
 
 ### Core Analysis
-- **60+ Real Blockchain Features**: Extracted from RPC nodes, The Graph subgraphs, Moralis API, and block explorers
-- **DEX Liquidity Analysis**: Real-time data from Uniswap V2/V3 and PancakeSwap
-- **True Gini Coefficient**: Calculated from actual on-chain holder distribution
-- **Historical Tracking**: Transfer event monitoring for ownership pattern detection
-- **Machine Learning**: RandomForest classifier with 94% accuracy
+- **18-Feature zkML Model**: Trained on 18,296 real Uniswap V2 contracts (16,462 rug pulls, 1,834 safe)
+- **98.2% Accuracy**: Logistic regression model optimized for Jolt-Atlas compatibility
+- **Real Training Data**: Not synthetic - actual rug pull patterns from production DEX contracts
+- **Cryptographic Verification**: Every inference includes zero-knowledge proof of correct execution
+
+### Zero-Knowledge Machine Learning (zkML)
+- **Jolt-Atlas Integration**: Lookup-based zkML proofs (NOT SNARKs) for verifiable AI
+- **~700ms Proof Generation**: Fast cryptographic proof using Lasso commitment scheme
+- **Local Verification**: Proofs verified server-side before returning to clients
+- **Transparent AI**: Complete proof data included in API responses for independent verification
+- **No Trusted Setup**: More transparent than SNARK-based systems
 
 ### Security & Trust
-- **Jolt Atlas zkML**: Cryptographic proofs of correct inference using lookup-based arguments (~700ms)
+- **Verified Proofs**: Every analysis includes cryptographically verified zkML proof
 - **Rate Limiting**: DOS protection (60 req/min global, 30 req/min payment verification)
-- **Replay Protection**: Prevents payment ID reuse with automatic expiration
+- **Replay Protection**: Prevents payment ID reuse with automatic expiration (1-hour TTL)
 - **Input Validation**: Strict validation for all parameters
 
 ### Integration
 - **X402 Protocol**: Payment-gated AI service with USDC on Base network (0.1 USDC per analysis)
 - **Service Discovery**: Standard `.well-known/ai-service.json` manifest for AI agent discovery
-- **Multi-Chain Support**: Ethereum, BSC, and Polygon networks
-- **Modern Web UI**: Dark minimalist interface with real-time data visualization
-- **Trustless Verification**: Cryptographic proof verification without trusting the service
+- **Multi-Chain Support**: Base and Solana networks
+- **Modern Web UI**: Dark theme with real-time zkML proof visualization
+- **Demo Mode**: Free testing with `demo_` payment ID prefix
 
 ## Screenshots
 
 The Web UI features a sleek dark theme with:
-- Real-time contract analysis
-- Interactive risk score visualization
-- Detailed feature breakdown (60+ metrics)
-- Support for Ethereum, BSC, and Polygon
+- zkML-verified contract analysis with cryptographic proofs
+- Interactive risk score visualization (98.2% accuracy)
+- zkML proof card showing verification status and proof details
+- Detailed feature breakdown (18 zkML features)
+- Raw proof JSON viewer for transparency
+- Support for Base and Solana networks
 - Responsive design for all devices
 
 ## Quick Start
@@ -235,9 +243,9 @@ curl -X POST http://localhost:3000/check \
 ```
 
 **Request Parameters:**
-- `payment_id` (required): X402 payment transaction hash (format: `tx_0x...`)
-- `contract_address` (required): Contract address to analyze (40 hex characters)
-- `blockchain` (optional): Network name (ethereum, bsc, polygon) - defaults to ethereum
+- `payment_id` (required): X402 payment transaction hash (format: `tx_0x...`) or `demo_` prefix for free testing
+- `contract_address` (required): Contract address to analyze (0x... for EVM, base58 for Solana)
+- `blockchain` (optional): Network name (`base`, `solana`) - defaults to `base`
 
 **Response:**
 
@@ -246,19 +254,21 @@ curl -X POST http://localhost:3000/check \
   "success": true,
   "data": {
     "contract_address": "0x1234567890abcdef1234567890abcdef12345678",
-    "blockchain": "ethereum",
+    "blockchain": "base",
     "riskScore": 0.78,
     "riskCategory": "high",
     "confidence": 0.92,
-    "features": {
-      "hasOwnershipTransfer": true,
-      "ownerBalance": 0.85,
-      "hasLiquidityLock": false,
-      "holderConcentration": 0.76,
-      "... 56 more features": "..."
-    },
+    "features": [100, 50, 0.5, 0.3, 0.2, 3.5, 2.0, 4.0, 1000, 800, 15.5, 50000, 5000, 0.1, 20, 0.05, 30, 0.15],
     "recommendation": "High risk detected. Avoid investing. Multiple red flags identified.",
-    "analysis_timestamp": "2025-10-23T12:34:56Z"
+    "analysis_timestamp": "2025-10-26T12:34:56Z",
+    "zkml": {
+      "proof_id": "a1b2c3d4e5f67890",
+      "protocol": "jolt-atlas-v1",
+      "verifiable": true,
+      "verified": true,
+      "verified_at": "2025-10-26T12:34:57Z",
+      "proof_size_bytes": 2340
+    }
   }
 }
 ```

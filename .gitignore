@@ -13,3 +13,31 @@ build/
 .pytest_cache/
 .coverage
 .env.render
+
+# Temporary files
+.zkml_temp/
+*.tmp
+*.swp
+*~
+
+# Build artifacts
+zkml-jolt-atlas/target/
+jolt_zkml/target/
+*.so
+*.dylib
+
+# Python
+*.py[cod]
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+Thumbs.db
+
+# Test artifacts
+test/
+examples/

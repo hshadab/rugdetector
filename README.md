@@ -1,8 +1,8 @@
 # RugDetector
 
-**X402-compliant AI service for detecting rug pull scams in smart contracts**
+**x402-compliant AI service for detecting rug pull scams in smart contracts**
 
-RugDetector is an autonomous AI service that analyzes blockchain smart contracts to detect potential "rug pulls" (exit scams) using machine learning. Built for AI agents like Claude, ChatGPT, and other autonomous systems, it provides payment-gated analysis via the X402 protocol.
+RugDetector is an autonomous AI service that analyzes blockchain smart contracts to detect potential "rug pulls" (exit scams) using machine learning. Built for AI agents like Claude, ChatGPT, and other autonomous systems, it provides payment-gated analysis via the x402 protocol.
 
 ## Features
 
@@ -13,7 +13,9 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 - **Cryptographic Verification**: Every inference includes zero-knowledge proof of correct execution
 
 ### Zero-Knowledge Machine Learning (zkML)
-- **Jolt-Atlas Integration**: Lookup-based zkML proofs (NOT SNARKs) for verifiable AI
+- **ONNX Model Format**: The logistic regression model is exported to ONNX (Open Neural Network Exchange) format for cross-platform inference compatibility with onnxruntime-node
+- **Modified Jolt-Atlas**: We adapted the Jolt-Atlas zkML framework to support ONNX inference, enabling cryptographic proofs for standard ML models without requiring custom circuit implementations
+- **Lookup-Based Proofs**: Uses Jolt-Atlas lookup tables (NOT SNARKs) for fast, verifiable AI inference
 - **~700ms Proof Generation**: Fast cryptographic proof using Lasso commitment scheme
 - **Local Verification**: Proofs verified server-side before returning to clients
 - **Transparent AI**: Complete proof data included in API responses for independent verification
@@ -26,7 +28,7 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 - **Input Validation**: Strict validation for all parameters
 
 ### Integration
-- **X402 Protocol**: Payment-gated AI service with USDC on Base network (0.1 USDC per analysis)
+- **x402 Protocol**: Payment-gated AI service with USDC on Base network (0.1 USDC per analysis)
 - **Service Discovery**: Standard `.well-known/ai-service.json` manifest for AI agent discovery
 - **Multi-Chain Support**: Base and Solana networks
 - **Modern Web UI**: Dark theme with real-time zkML proof visualization

@@ -7,7 +7,7 @@ RugDetector is a smart contract analyzer that uses artificial intelligence to de
 **Key Features:**
 - Analyzes smart contracts to predict if they're scams
 - Uses zero-knowledge machine learning (zkML) for verifiable AI
-- Works with AI agents through the X402 payment protocol
+- Works with AI agents through the x402 payment protocol
 - Provides cryptographic proofs that the AI analysis was done correctly
 
 ---
@@ -22,7 +22,7 @@ An AI agent (like Claude or ChatGPT) or human user discovers RugDetector through
 - Direct API documentation
 - The web UI at https://rugdetector.onrender.com
 
-#### Step 2: Payment (X402 Protocol)
+#### Step 2: Payment (x402 Protocol)
 To use the service, you need to pay:
 - **Amount**: 0.1 USDC
 - **Network**: Base (Layer 2 blockchain)
@@ -359,11 +359,11 @@ User Request → Rate Limiter → Payment Check → Feature Extraction
 
 ---
 
-## 6. **The X402 Protocol**
+## 6. **The x402 Protocol**
 
-### What Is X402?
+### What Is x402?
 
-X402 is a protocol for payment-gated HTTP APIs. Think of it like:
+x402 is a protocol for payment-gated HTTP APIs. Think of it like:
 - HTTP 200 = Success
 - HTTP 404 = Not Found
 - **HTTP 402 = Payment Required**
@@ -665,7 +665,7 @@ rugdetector/
 │       ├── paymentTracker.js  # Replay prevention
 │       ├── rugDetector.js     # ML inference
 │       ├── zkmlProver.js      # Proof generation/verification
-│       └── x402.js            # X402 protocol helpers
+│       └── x402.js            # x402 protocol helpers
 ├── model/
 │   ├── zkml_rugdetector.onnx  # ML model (432 bytes!)
 │   ├── zkml_rugdetector_scaler.pkl  # Feature scaler
@@ -689,7 +689,7 @@ rugdetector/
 
 RugDetector is a complete end-to-end system that:
 
-1. **Accepts payments** via X402 protocol (or demo mode)
+1. **Accepts payments** via x402 protocol (or demo mode)
 2. **Extracts 18 features** from smart contracts
 3. **Runs AI analysis** using a logistic regression model
 4. **Generates zkML proofs** using Jolt-Atlas (~700ms)

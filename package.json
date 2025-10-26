@@ -1,7 +1,7 @@
 {
   "name": "rugdetector",
   "version": "1.0.0",
-  "description": "X402-compliant rug pull detector for autonomous AI agents",
+  "description": "x402-compliant rug pull detector for autonomous AI agents",
   "main": "api/server.js",
   "scripts": {
     "start": "node api/server.js",

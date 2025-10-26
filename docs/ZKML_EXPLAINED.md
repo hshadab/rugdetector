@@ -251,7 +251,7 @@ Despite the limitations, the system achieves:
 ### 2. AI Agent Trading Bots
 **Scenario**: Automated trading bot needs to evaluate tokens
 **How it helps**:
-- X402 protocol integration (pay-per-use)
+- x402 protocol integration (pay-per-use)
 - Programmatic access
 - Cryptographic audit trail
 - No human intervention needed
@@ -380,7 +380,7 @@ Despite the limitations, the system achieves:
                │ 1. Discover service
                ▼
 ┌─────────────────────────────────────────────┐
-│    X402 Service Discovery                    │
+│    x402 Service Discovery                    │
 │    /.well-known/ai-service.json             │
 └──────────────┬──────────────────────────────┘
                │
@@ -448,7 +448,7 @@ Despite the limitations, the system achieves:
 
 ## How to Use (For Developers)
 
-### X402 Protocol Integration
+### x402 Protocol Integration
 
 ```javascript
 // 1. Discover the service
@@ -524,7 +524,7 @@ console.log('Proof verified:', verified.valid);
 **A**:
 1. Cryptographic proof of correct AI execution
 2. 98.2% accuracy on real data
-3. X402 protocol for AI agent integration
+3. x402 protocol for AI agent integration
 4. Transparent, verifiable methodology
 
 ---
@@ -552,7 +552,7 @@ While there are limitations (simple model, limited operations, no on-chain verif
 - **Live Service**: https://rugdetector.onrender.com
 - **Service Discovery**: https://rugdetector.onrender.com/.well-known/ai-service.json
 - **Jolt-Atlas**: https://github.com/ICME-Lab/jolt-atlas
-- **X402 Protocol**: https://docs.x402.org
+- **x402 Protocol**: https://docs.x402.org
 
 ---
 

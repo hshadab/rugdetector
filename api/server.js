@@ -81,7 +81,7 @@ app.use('/.well-known', express.static(path.join(__dirname, '../public/.well-kno
 
 // API Routes with rate limiting
 app.use('/check', paymentVerificationLimiter, require('./routes/check'));
-app.use('/zkml/verify', generalLimiter, require('./routes/zkmlVerify'));
+app.use('/zkml/verify', globalLimiter, require('./routes/zkmlVerify'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

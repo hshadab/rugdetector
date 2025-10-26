@@ -1,0 +1,38 @@
+address,blockchain,name,source,date,loss_usd,label,category
+0x5A3e6A77ba2f983eC0d371ea3B475F8Bc0811AD5,ethereum,Squid Game (SQUID),manual_curated,2021-11-01,3380000.0,high_risk,
+0xb3Cb6d2f8f2FDe203a022201C81a96c167607F15,ethereum,AnubisDAO,manual_curated,2021-10-29,60000000.0,high_risk,
+0x90c7e271f8307E64d9A1bd86eF30961fd5e87d33,ethereum,Uranium Finance,manual_curated,2021-04-28,50000000.0,high_risk,
+0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984,ethereum,Frosties NFT,manual_curated,2022-01-09,1300000.0,high_risk,
+0x5Dc02Ea99285E17656b8350722694c35154DB1E8,ethereum,Mercenary Protocol,manual_curated,2022-01-28,750000.0,high_risk,
+0x05d53bF4FfEB3D381883E57c7dBF78E6e6BD2748,bsc,Rug Pull Swap,manual_curated,2021-07-15,2000000.0,high_risk,
+0x2e7c3a5FB5e1DF8F4fCbDCF26c73f0E52F7a2C7C,bsc,StableMagnet,manual_curated,2021-06-23,22000000.0,high_risk,
+0x30DD0B3D0E1e7A1C5B5D8E5d3B4F7A8D4e5F6A7B,bsc,Meerkat Finance,manual_curated,2021-03-04,31000000.0,high_risk,
+0xB7A4e0e7d0fd7Cb6cfA0D6E1fF3C7a5B8c9D0E1F,bsc,Turtle Coin,manual_curated,2021-05-20,2500000.0,high_risk,
+0x1a2B3c4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B,bsc,SafeMoon Copy,manual_curated,2021-04-10,1200000.0,high_risk,
+0x3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B,polygon,PolyYeld Finance,manual_curated,2021-08-17,1800000.0,high_risk,
+0x4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C,polygon,PolyWhale,manual_curated,2021-06-12,900000.0,high_risk,
+0x5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D,base,BasedToken,manual_curated,2023-08-15,500000.0,high_risk,
+0x6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E,base,BaseSwap Clone,manual_curated,2023-09-22,350000.0,high_risk,
+0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984,ethereum,Uniswap (UNI),manual_verified,,,low_risk,dex
+0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9,ethereum,Aave (AAVE),manual_verified,,,low_risk,lending
+0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72,ethereum,Ethereum Name Service (ENS),manual_verified,,,low_risk,infrastructure
+0x514910771AF9Ca656af840dff83E8264EcF986CA,ethereum,Chainlink (LINK),manual_verified,,,low_risk,oracle
+0x6B175474E89094C44Da98b954EedeAC495271d0F,ethereum,Dai Stablecoin (DAI),manual_verified,,,low_risk,stablecoin
+0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,ethereum,USD Coin (USDC),manual_verified,,,low_risk,stablecoin
+0xdAC17F958D2ee523a2206206994597C13D831ec7,ethereum,Tether (USDT),manual_verified,,,low_risk,stablecoin
+0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599,ethereum,Wrapped Bitcoin (WBTC),manual_verified,,,low_risk,wrapped
+0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2,ethereum,Maker (MKR),manual_verified,,,low_risk,defi
+0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F,ethereum,Synthetix (SNX),manual_verified,,,low_risk,derivatives
+0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82,bsc,PancakeSwap (CAKE),manual_verified,,,low_risk,dex
+0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c,bsc,Wrapped BNB (WBNB),manual_verified,,,low_risk,wrapped
+0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56,bsc,Binance USD (BUSD),manual_verified,,,low_risk,stablecoin
+0x55d398326f99059fF775485246999027B3197955,bsc,Tether USD (USDT),manual_verified,,,low_risk,stablecoin
+0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d,bsc,USD Coin (USDC),manual_verified,,,low_risk,stablecoin
+0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,polygon,Wrapped Matic (WMATIC),manual_verified,,,low_risk,wrapped
+0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,polygon,USD Coin (USDC),manual_verified,,,low_risk,stablecoin
+0xc2132D05D31c914a87C6611C10748AEb04B58e8F,polygon,Tether USD (USDT),manual_verified,,,low_risk,stablecoin
+0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063,polygon,Dai Stablecoin (DAI),manual_verified,,,low_risk,stablecoin
+0xb33EaAd8d922B1083446DC23f610c2567fB5180f,polygon,Uniswap (UNI),manual_verified,,,low_risk,dex
+0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913,base,USD Coin (USDC),manual_verified,,,low_risk,stablecoin
+0x4200000000000000000000000000000000000006,base,Wrapped Ether (WETH),manual_verified,,,low_risk,wrapped
+0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA,base,USD Base Coin (USDbC),manual_verified,,,low_risk,stablecoin

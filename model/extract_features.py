@@ -28,29 +28,11 @@ load_dotenv()
 # ========== CONFIGURATION ==========
 
 BLOCKCHAIN_CONFIGS = {
-    'ethereum': {
-        'rpc_url': os.getenv('ETHEREUM_RPC_URL', 'https://eth.llamarpc.com'),
-        'explorer_api': 'https://api.etherscan.io/api',
-        'api_key': os.getenv('ETHERSCAN_API_KEY', ''),
-        'chain_id': 1,
-    },
     'base': {
         'rpc_url': os.getenv('BASE_RPC_URL', 'https://mainnet.base.org'),
         'explorer_api': 'https://api.basescan.org/api',
         'api_key': os.getenv('BASESCAN_API_KEY', ''),
         'chain_id': 8453,
-    },
-    'bsc': {
-        'rpc_url': os.getenv('BSC_RPC_URL', 'https://bsc-dataseed.binance.org'),
-        'explorer_api': 'https://api.bscscan.com/api',
-        'api_key': os.getenv('BSCSCAN_API_KEY', ''),
-        'chain_id': 56,
-    },
-    'polygon': {
-        'rpc_url': os.getenv('POLYGON_RPC_URL', 'https://polygon-rpc.com'),
-        'explorer_api': 'https://api.polygonscan.com/api',
-        'api_key': os.getenv('POLYGONSCAN_API_KEY', ''),
-        'chain_id': 137,
     },
     'solana': {
         'rpc_url': os.getenv('SOLANA_RPC_URL', 'https://api.mainnet-beta.solana.com'),

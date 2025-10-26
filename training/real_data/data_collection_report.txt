@@ -1,0 +1,37 @@
+======================================================================
+Real Rug Pull Data Collection Report
+Generated: 2025-10-25 20:42:04
+======================================================================
+
+Total Contracts Collected: 37
+
+Label Distribution:
+label
+low_risk     23
+high_risk    14
+
+Blockchain Distribution:
+blockchain
+ethereum    15
+bsc         10
+polygon      7
+base         5
+
+Source Distribution:
+source
+manual_verified    23
+manual_curated     14
+
+Data Sources Used:
+1. Manual curated list of documented rug pulls (2021-2024)
+2. CRPWarner rug pull dataset (if available)
+3. Token Sniffer API (if API key provided)
+4. Verified legitimate tokens (top DeFi protocols)
+5. CoinGecko top tokens by market cap
+
+Next Steps:
+1. Run extract_features.py on each address to get 60 features
+2. Create train/validation/test splits (70/15/15)
+3. Retrain RandomForest model on real data
+4. Evaluate on holdout test set
+5. Export retrained model to ONNX

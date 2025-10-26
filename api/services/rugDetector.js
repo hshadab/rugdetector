@@ -143,12 +143,24 @@ async function analyzeContract(features) {
     const probTensor = results[probName];
     const probabilities = Array.from(probTensor.data);
 
-    // probabilities = [low_risk_prob, medium_risk_prob, high_risk_prob]
-    const lowRiskProb = probabilities[0];
-    const mediumRiskProb = probabilities[1];
-    const highRiskProb = probabilities[2];
+    console.log(`[RugDetector] Model output classes: ${probabilities.length}`);
 
-    console.log(`[RugDetector] Probabilities - Low: ${lowRiskProb.toFixed(3)}, Medium: ${mediumRiskProb.toFixed(3)}, High: ${highRiskProb.toFixed(3)}`);
+    // Handle both 2-class (low, high) and 3-class (low, medium, high) models
+    let lowRiskProb, mediumRiskProb, highRiskProb;
+
+    if (probabilities.length === 2) {
+      // 2-class model: [low_risk_prob, high_risk_prob]
+      lowRiskProb = probabilities[0];
+      mediumRiskProb = 0; // No medium class
+      highRiskProb = probabilities[1];
+      console.log(`[RugDetector] 2-class model - Low: ${lowRiskProb.toFixed(3)}, High: ${highRiskProb.toFixed(3)}`);
+    } else {
+      // 3-class model: [low_risk_prob, medium_risk_prob, high_risk_prob]
+      lowRiskProb = probabilities[0];
+      mediumRiskProb = probabilities[1] || 0;
+      highRiskProb = probabilities[2] || 0;
+      console.log(`[RugDetector] 3-class model - Low: ${lowRiskProb.toFixed(3)}, Medium: ${mediumRiskProb.toFixed(3)}, High: ${highRiskProb.toFixed(3)}`);
+    }
 
     // Determine risk category and score
     let riskCategory;

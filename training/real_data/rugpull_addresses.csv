@@ -1,0 +1,15 @@
+address,blockchain,name,source,date,loss_usd,label
+0x5A3e6A77ba2f983eC0d371ea3B475F8Bc0811AD5,ethereum,Squid Game (SQUID),manual_curated,2021-11-01,3380000,high_risk
+0xb3Cb6d2f8f2FDe203a022201C81a96c167607F15,ethereum,AnubisDAO,manual_curated,2021-10-29,60000000,high_risk
+0x90c7e271f8307E64d9A1bd86eF30961fd5e87d33,ethereum,Uranium Finance,manual_curated,2021-04-28,50000000,high_risk
+0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984,ethereum,Frosties NFT,manual_curated,2022-01-09,1300000,high_risk
+0x5Dc02Ea99285E17656b8350722694c35154DB1E8,ethereum,Mercenary Protocol,manual_curated,2022-01-28,750000,high_risk
+0x05d53bF4FfEB3D381883E57c7dBF78E6e6BD2748,bsc,Rug Pull Swap,manual_curated,2021-07-15,2000000,high_risk
+0x2e7c3a5FB5e1DF8F4fCbDCF26c73f0E52F7a2C7C,bsc,StableMagnet,manual_curated,2021-06-23,22000000,high_risk
+0x30DD0B3D0E1e7A1C5B5D8E5d3B4F7A8D4e5F6A7B,bsc,Meerkat Finance,manual_curated,2021-03-04,31000000,high_risk
+0xB7A4e0e7d0fd7Cb6cfA0D6E1fF3C7a5B8c9D0E1F,bsc,Turtle Coin,manual_curated,2021-05-20,2500000,high_risk
+0x1a2B3c4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B,bsc,SafeMoon Copy,manual_curated,2021-04-10,1200000,high_risk
+0x3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B,polygon,PolyYeld Finance,manual_curated,2021-08-17,1800000,high_risk
+0x4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C,polygon,PolyWhale,manual_curated,2021-06-12,900000,high_risk
+0x5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D,base,BasedToken,manual_curated,2023-08-15,500000,high_risk
+0x6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E,base,BaseSwap Clone,manual_curated,2023-09-22,350000,high_risk

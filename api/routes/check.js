@@ -15,7 +15,7 @@ const paymentTracker = getPaymentTracker();
 router.post('/', async (req, res) => {
   try {
     // Extract request parameters
-    let { payment_id, contract_address, blockchain = 'ethereum' } = req.body;
+    let { payment_id, contract_address, blockchain = 'base' } = req.body;
 
     // Validate contract_address first
     if (!contract_address) {
@@ -70,7 +70,7 @@ router.post('/', async (req, res) => {
     }
 
     // Validate blockchain
-    const supportedBlockchains = ['ethereum', 'bsc', 'polygon', 'base', 'solana'];
+    const supportedBlockchains = ['base', 'solana'];
     if (!supportedBlockchains.includes(blockchain.toLowerCase())) {
       return res.status(422).json({
         success: false,

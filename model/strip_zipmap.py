@@ -39,7 +39,7 @@ def main():
 
     # Remove ZipMap node
     nodes = list(m.graph.node)
-    del nodes[ipmap := zipmap_idx]
+    del nodes[zipmap_idx]
 
     # Insert Identity node to preserve original output name as a tensor
     identity_node = helper.make_node(

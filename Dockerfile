@@ -39,7 +39,8 @@ RUN mkdir -p logs
 RUN chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core 2>/dev/null || true
 
 # Rewrite existing ONNX to remove ZipMap (non-tensor outputs) for Node compatibility
-RUN python3 model/strip_zipmap.py
+# Do not fail the build if strip step has issues; Node path has fallback.
+RUN python3 model/strip_zipmap.py || true
 
 # Expose port
 EXPOSE 3000

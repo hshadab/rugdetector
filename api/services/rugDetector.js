@@ -118,45 +118,30 @@ async function analyzeContract(features) {
 
     // Try Node inference. If model outputs include non-tensor types (ZipMap),
     // onnxruntime-node will throw. In that case, fallback to Python inference.
-    let probabilities;
-    try {
-      // Run and pick probability tensor. Prefer a float tensor output; avoid non-tensor outputs.
-      const results = await session.run({ float_input: inputTensor });
+    // Run and pick probability tensor. Prefer a float tensor output; avoid non-tensor outputs.
+    const results = await session.run({ float_input: inputTensor });
 
-      const names = session.outputNames || [];
-      let probName = null;
-      // common names
-      if (names.includes('output_probability')) probName = 'output_probability';
-      else if (names.includes('probabilities')) probName = 'probabilities';
-      else {
-        // find first float tensor output by inspecting result types
-        for (const n of names) {
-          const v = results[n];
-          if (v && v.data && (v.data instanceof Float32Array || v.data instanceof Float64Array)) {
-            probName = n; break;
-          }
+    const names = session.outputNames || [];
+    let probName = null;
+    // common names
+    if (names.includes('output_probability')) probName = 'output_probability';
+    else if (names.includes('probabilities')) probName = 'probabilities';
+    else {
+      // find first float tensor output by inspecting result types
+      for (const n of names) {
+        const v = results[n];
+        if (v && v.data && (v.data instanceof Float32Array || v.data instanceof Float64Array)) {
+          probName = n; break;
         }
       }
-
-      if (!probName) {
-        // No float tensor output found; final attempt: request only label
-        // and compute score from label is not ideal. Fallback to Python instead.
-        throw new Error('No float probability tensor found');
-      }
-
-      const probTensor = results[probName];
-      probabilities = Array.from(probTensor.data);
-    } catch (e) {
-      const msg = String(e && e.message || e);
-      if (msg.includes('Non tensor type is temporarily not supported')) {
-        console.warn('[RugDetector] Node ORT cannot return non-tensor outputs (ZipMap). Falling back to Python.');
-        return await runPythonInference(features);
-      } else if (msg.includes('No float probability tensor')) {
-        console.warn('[RugDetector] No probability tensor detected. Falling back to Python.');
-        return await runPythonInference(features);
-      }
-      throw e;
     }
+
+    if (!probName) {
+      throw new Error('No float probability tensor found in ONNX outputs: ' + JSON.stringify(names));
+    }
+
+    const probTensor = results[probName];
+    const probabilities = Array.from(probTensor.data);
 
     // probabilities = [low_risk_prob, medium_risk_prob, high_risk_prob]
     const lowRiskProb = probabilities[0];
@@ -201,40 +186,7 @@ async function analyzeContract(features) {
   }
 }
 
-/**
- * Run inference via Python to handle models with ZipMap (non-tensor outputs)
- * @param {Object} features
- * @returns {Promise<{riskScore:number, riskCategory:string, confidence:number, probabilities:{low:number, medium:number, high:number}}>} 
- */
-function runPythonInference(features) {
-  return new Promise((resolve, reject) => {
-    const py = spawn(PYTHON_PATH, [path.join(__dirname, '../../model/run_inference.py')], {
-      stdio: ['pipe', 'pipe', 'pipe']
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    py.stdout.on('data', (d) => stdout += d.toString());
-    py.stderr.on('data', (d) => { stderr += d.toString(); process.stderr.write(`[RugDetector] PY stderr: ${d}`); });
-    py.on('error', (err) => reject(new Error(`Python inference failed to start: ${err.message}`)));
-    py.on('close', (code) => {
-      if (code !== 0) {
-        return reject(new Error(`Python inference exited with code ${code}: ${stderr.trim()}`));
-      }
-      try {
-        const obj = JSON.parse(stdout);
-        resolve(obj);
-      } catch (err) {
-        reject(new Error(`Python inference returned invalid JSON: ${err.message}`));
-      }
-    });
-
-    // send features JSON via stdin
-    py.stdin.write(JSON.stringify({ features }));
-    py.stdin.end();
-  });
-}
+// Python fallback removed after confirming ONNX model outputs tensor probabilities
 
 /**
  * Convert features object to ordered array for ONNX model

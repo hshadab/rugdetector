@@ -1267,3 +1267,380 @@ body {
         flex-direction: column;
     }
 }
+
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   ======================================== */
+
+/* Hamburger Menu Button */
+.hamburger {
+    display: none; /* Hidden on desktop */
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+    transition: all var(--transition-base);
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 2px;
+    background: var(--accent-cyan);
+    transition: all var(--transition-base);
+    border-radius: 2px;
+}
+
+/* Hamburger Animation when active */
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.mobile-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 768px) {
+    /* Show hamburger menu */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Header adjustments */
+    .header .container {
+        position: relative;
+    }
+
+    /* Logo sizing */
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .logo-img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .logo-text {
+        font-size: 1.1rem;
+    }
+
+    /* Mobile Navigation */
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--bg-secondary);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 80px 2rem 2rem;
+        gap: var(--spacing-sm);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+    }
+
+    .nav.active {
+        right: 0;
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+        text-align: left;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: rgba(0, 255, 255, 0.1);
+    }
+
+    /* Hero Section */
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    /* Stats Grid */
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    /* Feature Badges */
+    .feature-badges {
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
+    .feature-badge {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    /* Risk Display */
+    .risk-display {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .risk-score-container svg {
+        width: 180px;
+        height: 180px;
+    }
+
+    .risk-score {
+        font-size: 2.5rem;
+    }
+
+    /* Sources Grid */
+    .sources-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Features Tabs */
+    .features-tabs {
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+    }
+
+    /* Details Grids */
+    .details-grid,
+    .zkml-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Code Blocks */
+    .code-block {
+        font-size: 0.75rem;
+        padding: var(--spacing-sm);
+    }
+
+    .code-block code {
+        font-size: 0.75rem;
+    }
+
+    /* API Documentation */
+    .api-endpoint {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .endpoint-url {
+        font-size: 0.75rem;
+        word-break: break-all;
+    }
+
+    /* Security Grid */
+    .security-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Error Codes */
+    .error-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+
+    .footer-badges {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    /* Container Padding */
+    .container {
+        padding: 0 1rem;
+    }
+
+    /* Card Padding */
+    .card {
+        padding: var(--spacing-lg);
+    }
+
+    .card-header {
+        padding: 0;
+    }
+}
+
+/* Tablet Responsiveness (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sources-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .security-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0 2rem;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .risk-score-container svg {
+        width: 150px;
+        height: 150px;
+    }
+
+    .risk-score {
+        font-size: 2rem;
+    }
+
+    .nav {
+        width: 100%;
+        right: -100%;
+    }
+
+    .feature-badge {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        font-size: 0.9rem;
+        padding: 0.8rem 1.2rem;
+    }
+
+    .logo-text {
+        display: none; /* Hide text on very small screens */
+    }
+}
+
+/* Landscape Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .nav {
+        padding: 60px 1.5rem 1.5rem;
+        gap: var(--spacing-xs);
+    }
+
+    .nav-link {
+        padding: var(--spacing-sm);
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Touch Device Improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .nav-link {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        min-height: 48px;
+    }
+
+    .tab-btn {
+        min-height: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .nav-link:hover {
+        transform: none;
+    }
+
+    .btn-primary:hover {
+        transform: none;
+    }
+
+    /* But keep active states */
+    .nav-link:active {
+        background: rgba(0, 255, 255, 0.15);
+    }
+
+    .btn-primary:active {
+        transform: scale(0.98);
+    }
+}

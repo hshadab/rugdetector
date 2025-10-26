@@ -21,7 +21,16 @@
                      class="logo-img">
                 <span class="logo-text">RugDetector</span>
             </a>
-            <nav class="nav">
+
+            <!-- Hamburger Menu Button (Mobile) -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <!-- Navigation -->
+            <nav class="nav" id="navMenu">
                 <a href="https://github.com/coinbase/x402" target="_blank" class="nav-link x402-badge" title="x402 Protocol Compliant" style="margin-right: 1rem;">
                     💳 x402
                 </a>
@@ -32,6 +41,9 @@
             </nav>
         </div>
     </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
 
     <!-- Main Content -->
     <main class="main">

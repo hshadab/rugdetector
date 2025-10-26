@@ -583,3 +583,69 @@ document.getElementById('viewProofBtn')?.addEventListener('click', function() {
 
 console.log('🚀 RugDetector UI initialized');
 console.log('API endpoint:', API_ENDPOINT);
+
+// ========================================
+// MOBILE MENU FUNCTIONALITY
+// ========================================
+
+// Hamburger menu toggle
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navMenu = document.getElementById('navMenu');
+const mobileOverlay = document.getElementById('mobileOverlay');
+
+function toggleMobileMenu() {
+    hamburgerBtn.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    mobileOverlay.classList.toggle('active');
+    
+    // Prevent body scroll when menu is open
+    if (navMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+function closeMobileMenu() {
+    hamburgerBtn.classList.remove('active');
+    navMenu.classList.remove('active');
+    mobileOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Toggle menu on hamburger click
+if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', toggleMobileMenu);
+}
+
+// Close menu on overlay click
+if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', closeMobileMenu);
+}
+
+// Close menu when clicking nav links
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        // Only close on mobile (when hamburger is visible)
+        if (window.innerWidth <= 768) {
+            closeMobileMenu();
+        }
+    });
+});
+
+// Close menu on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        closeMobileMenu();
+    }
+});
+
+// Close menu when resizing to desktop
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && navMenu.classList.contains('active')) {
+        closeMobileMenu();
+    }
+});
+
+console.log('📱 Mobile menu initialized');

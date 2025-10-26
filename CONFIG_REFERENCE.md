@@ -39,7 +39,7 @@ Template file with placeholder values. Safe to commit to git. Use this to create
 ### Payment Configuration
 - **Payment Address**: `0x1f409E94684804e5158561090Ced8941B47B0CC6`
 - **USDC Contract** (Base): `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
-- **Payment Amount**: `100000` (0.1 USDC in units)
+- **Payment Amount**: `10000` (0.01 USDC in units)
 
 ### Render.com
 - **Dashboard**: https://dashboard.render.com/web/srv-d3uh21v5r7bs73fhq05g
@@ -104,7 +104,7 @@ These are currently empty but can enhance feature extraction:
 | `MORALIS_API_KEY` | `eyJhbGci...` | Moralis |
 | `THE_GRAPH_API_KEY` | `e3af3c542937403f686cf2f277a05820` | The Graph |
 | `USDC_CONTRACT_ADDRESS` | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` | Base USDC |
-| `PAYMENT_AMOUNT` | `100000` | 0.1 USDC |
+| `PAYMENT_AMOUNT` | `10000` | 0.01 USDC |
 
 ---
 

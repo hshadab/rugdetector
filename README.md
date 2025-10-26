@@ -522,8 +522,7 @@ PYTHON_PATH=python3
 
 ### Cloud Platforms
 
-- **Railway**: Connect GitHub repo, auto-deploy
-- **Render**: Deploy with Dockerfile
+- **Render**: Deploy with Dockerfile (currently deployed)
 - **AWS EC2**: Ubuntu + PM2
 - **Heroku**: Use Procfile
 

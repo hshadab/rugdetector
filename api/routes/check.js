@@ -7,6 +7,7 @@ const paymentService = require('../services/payment');
 const rugDetector = require('../services/rugDetector');
 const { getPaymentTracker } = require('../services/paymentTracker');
 const x402 = require('../services/x402');
+const zkml = require('../services/zkmlProver');
 
 // Initialize payment tracker
 const paymentTracker = getPaymentTracker();
@@ -213,7 +214,24 @@ router.post('/', async (req, res) => {
       recommendation = 'Low risk detected. Contract appears relatively safe, but always DYOR.';
     }
 
-    // Return successful response
+    // Step 5: Generate zkML proof
+    console.log(`[Check] Generating zkML proof`);
+    let zkmlProof;
+    try {
+      zkmlProof = await zkml.generateProof(features, analysis);
+      console.log(`[Check] zkML proof generated: ${zkmlProof.proof_id.slice(0, 16)}...`);
+    } catch (proofError) {
+      console.error('[Check] zkML proof generation failed:', proofError.message);
+      // Continue without proof if generation fails
+      zkmlProof = {
+        proof_id: 'unavailable',
+        protocol: 'jolt-atlas-v1',
+        verifiable: false,
+        error: 'Proof generation failed'
+      };
+    }
+
+    // Return successful response with zkML proof
     res.json({
       success: true,
       data: {
@@ -224,7 +242,8 @@ router.post('/', async (req, res) => {
         confidence: analysis.confidence,
         features: features,
         recommendation: recommendation,
-        analysis_timestamp: new Date().toISOString()
+        analysis_timestamp: new Date().toISOString(),
+        zkml: zkmlProof
       }
     });
 

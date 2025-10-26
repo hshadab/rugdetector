@@ -15,8 +15,8 @@ RugDetector is an autonomous AI service that analyzes blockchain smart contracts
 ### Zero-Knowledge Machine Learning (zkML)
 - **ONNX Export**: Logistic regression model trained in scikit-learn, exported to ONNX via `skl2onnx` for cross-platform compatibility
 - **ZipMap Stripping**: Build process strips scikit-learn's ZipMap node (replaces `sequence<map>` with `tensor(float)`) to ensure tensor outputs compatible with both onnxruntime-node (Node.js inference) and Jolt-Atlas (zkML proof generation)
-- **Jolt-Atlas Native ONNX Support**: Uses unmodified Jolt-Atlas framework which natively supports ONNX models with lookup-based proofs (Mul, ReduceSum, Add, Sigmoid operations)
-- **Lookup-Based Proofs**: Uses Jolt-Atlas lookup tables (NOT SNARKs) for fast, verifiable AI inference without circuit constraints
+- **Modified Jolt-Atlas**: Forked Jolt-Atlas with `MAX_TENSOR_SIZE` increased from 64→1024 to support larger models (18 features × 32-bit weights = 576 elements)
+- **Lookup-Based Proofs**: Uses Jolt-Atlas lookup tables (NOT SNARKs) for fast, verifiable AI inference without circuit constraints (Mul, ReduceSum, Add, Sigmoid operations)
 - **~700ms Proof Generation**: Fast cryptographic proof using Lasso commitment scheme
 - **Local Verification**: Proofs verified server-side before returning to clients
 - **Transparent AI**: Complete proof data included in API responses for independent verification

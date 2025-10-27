@@ -17,7 +17,7 @@ Think of it like getting a notarized certificate with your analysis results - yo
 ### 1. AI Agent Discovers the Service
 An AI agent (like Claude, ChatGPT, or custom bots) finds the service by checking:
 ```
-https://rugdetector.onrender.com/.well-known/ai-service.json
+https://rugdetector.ai/.well-known/ai-service.json
 ```
 
 This file tells the agent:
@@ -453,7 +453,7 @@ Despite the limitations, the system achieves:
 ```javascript
 // 1. Discover the service
 const serviceInfo = await fetch(
-  'https://rugdetector.onrender.com/.well-known/ai-service.json'
+  'https://rugdetector.ai/.well-known/ai-service.json'
 ).then(r => r.json());
 
 // 2. Send payment (0.1 USDC on Base)
@@ -465,7 +465,7 @@ const txHash = await sendUSDC(
 
 // 3. Request analysis
 const analysis = await fetch(
-  'https://rugdetector.onrender.com/check',
+  'https://rugdetector.ai/check',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -479,7 +479,7 @@ const analysis = await fetch(
 
 // 4. Verify proof (optional)
 const verified = await fetch(
-  'https://rugdetector.onrender.com/zkml/verify',
+  'https://rugdetector.ai/zkml/verify',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -549,8 +549,8 @@ While there are limitations (simple model, limited operations, no on-chain verif
 ## Resources
 
 - **GitHub**: https://github.com/hshadab/rugdetector
-- **Live Service**: https://rugdetector.onrender.com
-- **Service Discovery**: https://rugdetector.onrender.com/.well-known/ai-service.json
+- **Live Service**: https://rugdetector.ai
+- **Service Discovery**: https://rugdetector.ai/.well-known/ai-service.json
 - **Jolt-Atlas**: https://github.com/ICME-Lab/jolt-atlas
 - **x402 Protocol**: https://docs.x402.org
 

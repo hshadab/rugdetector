@@ -20,7 +20,7 @@ RugDetector is a smart contract analyzer that uses artificial intelligence to de
 An AI agent (like Claude or ChatGPT) or human user discovers RugDetector through:
 - The service discovery endpoint: `/.well-known/ai-service.json`
 - Direct API documentation
-- The web UI at https://rugdetector.onrender.com
+- The web UI at https://rugdetector.ai
 
 #### Step 2: Payment (x402 Protocol)
 To use the service, you need to pay:
@@ -617,13 +617,13 @@ npm run train
 npm start
 ```
 
-Server runs on http://localhost:3000 (production: https://rugdetector.onrender.com)
+Server runs on http://localhost:3000 (production: https://rugdetector.ai)
 
 ### API Integration Example
 
 ```javascript
 // Make API request
-const response = await fetch('https://rugdetector.onrender.com/check', {
+const response = await fetch('https://rugdetector.ai/check', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({

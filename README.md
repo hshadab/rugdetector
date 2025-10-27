@@ -96,14 +96,14 @@ npm start
 Server will start on `http://localhost:3000`
 
 **Access the service:**
-- 🎨 Web UI: http://localhost:3000 (production: https://rugdetector.onrender.com)
+- 🎨 Web UI: http://localhost:3000 (production: https://rugdetector.ai)
 - 🔌 API endpoint: http://localhost:3000/check
 - 📋 Service discovery: http://localhost:3000/.well-known/ai-service.json
 - 💚 Health check: http://localhost:3000/health
 
 ## Using the Web UI
 
-**Production**: Visit https://rugdetector.onrender.com
+**Production**: Visit https://rugdetector.ai
 
 **Local Development**:
 1. Open http://localhost:3000 in your browser
@@ -141,9 +141,9 @@ Unlike traditional zkSNARKs that use expensive arithmetic circuits, Jolt Atlas u
 ### Quick Start with ZKML
 
 ```bash
-# Production API (replace localhost:3000 with https://rugdetector.onrender.com for production)
+# Production API
 # Analyze a contract - returns result + ZKML proof
-curl -X POST https://rugdetector.onrender.com/check \
+curl -X POST https://rugdetector.ai/check \
   -H "Content-Type: application/json" \
   -d '{
     "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
@@ -167,7 +167,7 @@ curl -X POST https://rugdetector.onrender.com/check \
 ### Verify a Proof
 
 ```bash
-curl -X POST https://rugdetector.onrender.com/zkml/verify \
+curl -X POST https://rugdetector.ai/zkml/verify \
   -H "Content-Type: application/json" \
   -d '{
     "proof_id": "82ba12cc...",
@@ -223,7 +223,7 @@ python3 zkml_prover_wrapper.py
 ### Service Discovery
 
 ```bash
-curl https://rugdetector.onrender.com/.well-known/ai-service.json
+curl https://rugdetector.ai/.well-known/ai-service.json
 ```
 
 Returns x402 manifest with pricing, endpoints, and capabilities.
@@ -231,13 +231,13 @@ Returns x402 manifest with pricing, endpoints, and capabilities.
 ### Health Check
 
 ```bash
-curl https://rugdetector.onrender.com/health
+curl https://rugdetector.ai/health
 ```
 
 ### Analyze Contract
 
 ```bash
-curl -X POST https://rugdetector.onrender.com/check \
+curl -X POST https://rugdetector.ai/check \
   -H "Content-Type: application/json" \
   -d '{
     "payment_id": "demo_test_123",

@@ -2,14 +2,19 @@
 # Stage 1: Base image with Node.js and Python
 FROM node:18-bullseye-slim
 
-# Install Python and system dependencies
+# Install Python, Rust, and system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-dev \
     build-essential \
     curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Rust for building zkML binary
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
@@ -35,8 +40,12 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs
 
-# Set permissions for zkML binary (if it exists)
-RUN chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core 2>/dev/null || true
+# Build zkML binary from source with MAX_TENSOR_SIZE=1024 modifications
+RUN cd zkml-jolt-atlas && \
+    git submodule update --init --recursive && \
+    cd zkml-jolt-core && \
+    cargo build --release && \
+    chmod +x ../target/release/zkml-jolt-core
 
 # Rewrite existing ONNX to remove ZipMap (non-tensor outputs) for Node compatibility
 # Strict: fail build if this step fails so we don't deploy unsupported model shapes

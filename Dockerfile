@@ -2,7 +2,7 @@
 # Stage 1: Base image with Node.js and Python
 FROM node:18-bullseye-slim
 
-# Install Python and system dependencies
+# Install Python, Rust, and system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -11,6 +11,10 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Rust for building zkML binary with MAX_TENSOR_SIZE=1024
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
@@ -36,11 +40,16 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs
 
-# Use pre-built zkML binary from personal fork with MAX_TENSOR_SIZE=1024
-# Binary is committed to repo to avoid expensive Rust compilation on every deploy
-RUN chmod +x zkml-jolt-atlas/target/release/zkml-jolt-core && \
-    ls -lh zkml-jolt-atlas/target/release/zkml-jolt-core && \
-    echo "Using pre-built zkML binary with MAX_TENSOR_SIZE=1024 from hshadab/jolt-atlas"
+# Build zkML binary from personal fork with MAX_TENSOR_SIZE=1024 modifications
+# ALWAYS builds - no fallbacks or optional behavior
+RUN echo "Building zkML binary from hshadab/jolt-atlas fork..." && \
+    cd zkml-jolt-atlas && \
+    git submodule update --init --recursive && \
+    cd zkml-jolt-core && \
+    CARGO_NET_GIT_FETCH_WITH_CLI=true cargo build --release && \
+    chmod +x ../target/release/zkml-jolt-core && \
+    ls -lh ../target/release/zkml-jolt-core && \
+    echo "zkML binary built successfully with MAX_TENSOR_SIZE=1024"
 
 # Rewrite existing ONNX to remove ZipMap (non-tensor outputs) for Node compatibility
 # Strict: fail build if this step fails so we don't deploy unsupported model shapes

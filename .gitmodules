@@ -1,0 +1,3 @@
+[submodule "zkml-jolt-atlas"]
+	path = zkml-jolt-atlas
+	url = https://github.com/hshadab/jolt-atlas.git

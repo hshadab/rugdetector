@@ -1,8 +1,8 @@
 # RugDetector
 
-**x402-compliant AI service for detecting rug pull scams in smart contracts**
+**x402-compliant zkML service for detecting rug pull scams in smart contracts**
 
-RugDetector is an autonomous AI service that analyzes blockchain smart contracts to detect potential "rug pulls" (exit scams) using machine learning. Built for AI agents like Claude, ChatGPT, and other autonomous systems, it provides payment-gated analysis via the x402 protocol.
+RugDetector is an autonomous AI service that analyzes blockchain smart contracts to detect potential "rug pulls" (exit scams) using zero-knowledge machine learning (zkML). Built for AI agents like Claude, ChatGPT, and other autonomous systems, it provides cryptographically verifiable, payment-gated analysis via the x402 protocol. Every prediction includes a zero-knowledge proof of correct ML inference, ensuring transparency and trustlessness.
 
 ## Features
 
@@ -96,20 +96,23 @@ npm start
 Server will start on `http://localhost:3000`
 
 **Access the service:**
-- 🎨 Web UI: http://localhost:3000
+- 🎨 Web UI: http://localhost:3000 (production: https://rugdetector.onrender.com)
 - 🔌 API endpoint: http://localhost:3000/check
 - 📋 Service discovery: http://localhost:3000/.well-known/ai-service.json
 - 💚 Health check: http://localhost:3000/health
 
 ## Using the Web UI
 
+**Production**: Visit https://rugdetector.onrender.com
+
+**Local Development**:
 1. Open http://localhost:3000 in your browser
 2. Enter a smart contract address (0x...)
 3. Select the blockchain (Ethereum, BSC, or Polygon)
 4. Click "Analyze Contract"
-5. View the risk score, features, and recommendations
+5. View the risk score, zkML proof, features, and recommendations
 
-**Demo Mode**: The UI includes a mock payment ID for testing purposes. In production, you would need to send 0.1 USDC on Base network first.
+**Demo Mode**: Use payment ID prefix `demo_` for testing without actual payment (e.g., `demo_test_123`).
 
 ## Zero-Knowledge Machine Learning (ZKML)
 
@@ -138,16 +141,14 @@ Unlike traditional zkSNARKs that use expensive arithmetic circuits, Jolt Atlas u
 ### Quick Start with ZKML
 
 ```bash
-# Start the ZKML server (with real ONNX inference)
-python3 zkml_server.py
-
+# Production API (replace localhost:3000 with https://rugdetector.onrender.com for production)
 # Analyze a contract - returns result + ZKML proof
-curl -X POST http://localhost:3000/check \
+curl -X POST https://rugdetector.onrender.com/check \
   -H "Content-Type: application/json" \
   -d '{
     "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
     "blockchain": "ethereum",
-    "payment_id": "tx_0x..."
+    "payment_id": "demo_test_123"
   }'
 
 # Response includes ZKML proof:
@@ -166,7 +167,7 @@ curl -X POST http://localhost:3000/check \
 ### Verify a Proof
 
 ```bash
-curl -X POST http://localhost:3000/zkml/verify \
+curl -X POST https://rugdetector.onrender.com/zkml/verify \
   -H "Content-Type: application/json" \
   -d '{
     "proof_id": "82ba12cc...",
@@ -222,24 +223,24 @@ python3 zkml_prover_wrapper.py
 ### Service Discovery
 
 ```bash
-curl http://localhost:3000/.well-known/ai-service.json
+curl https://rugdetector.onrender.com/.well-known/ai-service.json
 ```
 
-Returns X402 manifest with pricing, endpoints, and capabilities.
+Returns x402 manifest with pricing, endpoints, and capabilities.
 
 ### Health Check
 
 ```bash
-curl http://localhost:3000/health
+curl https://rugdetector.onrender.com/health
 ```
 
 ### Analyze Contract
 
 ```bash
-curl -X POST http://localhost:3000/check \
+curl -X POST https://rugdetector.onrender.com/check \
   -H "Content-Type: application/json" \
   -d '{
-    "payment_id": "tx_0xYOUR_TRANSACTION_HASH",
+    "payment_id": "demo_test_123",
     "contract_address": "0x1234567890abcdef1234567890abcdef12345678",
     "blockchain": "ethereum"
   }'

@@ -617,13 +617,13 @@ npm run train
 npm start
 ```
 
-Server runs on http://localhost:3000
+Server runs on http://localhost:3000 (production: https://rugdetector.onrender.com)
 
 ### API Integration Example
 
 ```javascript
 // Make API request
-const response = await fetch('http://localhost:3000/check', {
+const response = await fetch('https://rugdetector.onrender.com/check', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({

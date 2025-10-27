@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust for building zkML binary
+# Install Rust for building zkML binary with MAX_TENSOR_SIZE=1024
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
@@ -40,12 +40,16 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs
 
-# Build zkML binary from source with MAX_TENSOR_SIZE=1024 modifications
-RUN cd zkml-jolt-atlas && \
+# Build zkML binary from personal fork with MAX_TENSOR_SIZE=1024 modifications
+# This ALWAYS builds - no fallbacks or optional behavior
+RUN echo "Building zkML binary from hshadab/jolt-atlas fork..." && \
+    cd zkml-jolt-atlas && \
     git submodule update --init --recursive && \
     cd zkml-jolt-core && \
-    cargo build --release && \
-    chmod +x ../target/release/zkml-jolt-core
+    CARGO_NET_GIT_FETCH_WITH_CLI=true cargo build --release && \
+    chmod +x ../target/release/zkml-jolt-core && \
+    ls -lh ../target/release/zkml-jolt-core && \
+    echo "zkML binary built successfully with MAX_TENSOR_SIZE=1024"
 
 # Rewrite existing ONNX to remove ZipMap (non-tensor outputs) for Node compatibility
 # Strict: fail build if this step fails so we don't deploy unsupported model shapes

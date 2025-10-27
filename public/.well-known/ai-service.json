@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0.0",
+  "name": "RugDetector",
+  "version": "1.0.0",
+  "description": "zkML-verified rug pull detection for DeFi smart contracts. Analyze Ethereum, Base, and Solana contracts with 98.2% accuracy using cryptographically verifiable zero-knowledge machine learning proofs.",
+  "provider": {
+    "name": "RugDetector",
+    "url": "https://rugdetector.ai",
+    "support_email": "support@rugdetector.ai"
+  },
+  "protocol": "x402",
+  "payment": {
+    "required": true,
+    "network": "base",
+    "currency": "USDC",
+    "token_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "amount": "0.1",
+    "settlement_time": "2_seconds",
+    "demo_mode": {
+      "enabled": true,
+      "description": "Use payment_id with 'demo_' prefix for free testing",
+      "example": "demo_test_123"
+    }
+  },
+  "capabilities": {
+    "zkml_proofs": true,
+    "proof_protocol": "jolt-atlas-v1",
+    "proof_generation_time": "700ms",
+    "verifiable_ai": true,
+    "trustless": true,
+    "multi_chain": true
+  },
+  "endpoints": [
+    {
+      "path": "/check",
+      "method": "POST",
+      "description": "Analyze smart contract for rug pull risk with zero-knowledge ML proof. Returns risk score, category, 18 analyzed features, and cryptographic proof of correct AI inference.",
+      "rate_limit": {
+        "requests_per_minute": 30,
+        "per_ip": true
+      },
+      "input": {
+        "type": "object",
+        "required": ["contract_address"],
+        "properties": {
+          "contract_address": {
+            "type": "string",
+            "description": "Smart contract address to analyze. Use 0x-prefixed hex for EVM chains (Ethereum/Base) or base58 for Solana.",
+            "pattern": "^(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})$",
+            "examples": [
+              "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+              "0x1234567890abcdef1234567890abcdef12345678"
+            ]
+          },
+          "blockchain": {
+            "type": "string",
+            "description": "Blockchain network where the contract is deployed. Defaults to 'base' if not specified.",
+            "enum": ["base", "ethereum", "solana"],
+            "default": "base",
+            "examples": ["base", "ethereum", "solana"]
+          },
+          "payment_id": {
+            "type": "string",
+            "description": "Payment transaction hash from Base network USDC transfer, or use 'demo_' prefix for free testing (e.g., demo_test_123).",
+            "pattern": "^(tx_0x[a-fA-F0-9]{64}|demo_.+)$",
+            "examples": [
+              "tx_0xabc123...",
+              "demo_test_123"
+            ]
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the analysis completed successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "contract_address": {
+                "type": "string",
+                "description": "The analyzed contract address"
+              },
+              "blockchain": {
+                "type": "string",
+                "description": "The blockchain network"
+              },
+              "riskScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Probability of rug pull (0=safe, 1=definitely a scam)"
+              },
+              "riskCategory": {
+                "type": "string",
+                "enum": ["low", "medium", "high"],
+                "description": "Risk classification: low (0-0.3), medium (0.3-0.7), high (0.7-1.0)"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Model confidence in the prediction (98.2% validation accuracy)"
+              },
+              "features": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 18,
+                "maxItems": 18,
+                "description": "18 extracted features used for analysis (liquidity metrics, trading patterns, holder distribution)"
+              },
+              "recommendation": {
+                "type": "string",
+                "description": "Human-readable recommendation based on risk level"
+              },
+              "analysis_timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "ISO 8601 timestamp of when analysis was performed"
+              },
+              "zkml": {
+                "type": "object",
+                "description": "Zero-knowledge machine learning proof",
+                "properties": {
+                  "proof_id": {
+                    "type": "string",
+                    "description": "Unique proof identifier"
+                  },
+                  "protocol": {
+                    "type": "string",
+                    "const": "jolt-atlas-v1",
+                    "description": "zkML proof protocol (lookup-based, not SNARKs)"
+                  },
+                  "verifiable": {
+                    "type": "boolean",
+                    "description": "Whether the proof can be independently verified"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "Whether the proof was verified successfully"
+                  },
+                  "verified_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp of proof verification"
+                  },
+                  "proof_size_bytes": {
+                    "type": "number",
+                    "description": "Size of the cryptographic proof in bytes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "examples": [
+        {
+          "request": {
+            "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            "blockchain": "ethereum",
+            "payment_id": "demo_test_123"
+          },
+          "response": {
+            "success": true,
+            "data": {
+              "contract_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+              "blockchain": "ethereum",
+              "riskScore": 0.12,
+              "riskCategory": "low",
+              "confidence": 0.982,
+              "recommendation": "Low risk detected. Contract appears safe based on 18 zkML-verified features.",
+              "zkml": {
+                "proof_id": "a1b2c3d4e5f67890",
+                "protocol": "jolt-atlas-v1",
+                "verifiable": true,
+                "verified": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/health",
+      "method": "GET",
+      "description": "Health check endpoint to verify service availability and status",
+      "input": null,
+      "output": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Service health status"
+          },
+          "service": {
+            "type": "string",
+            "description": "Service name"
+          },
+          "version": {
+            "type": "string",
+            "description": "API version"
+          },
+          "uptime": {
+            "type": "number",
+            "description": "Server uptime in seconds"
+          }
+        }
+      }
+    }
+  ],
+  "model": {
+    "name": "rugdetector_v1.onnx",
+    "type": "logistic_regression",
+    "accuracy": 0.982,
+    "training_data": {
+      "samples": 18296,
+      "rug_pulls": 16462,
+      "safe_contracts": 1834,
+      "source": "Uniswap V2 contracts (2020-2023)",
+      "real_data": true
+    },
+    "features": {
+      "count": 18,
+      "categories": [
+        "liquidity_metrics",
+        "trading_patterns",
+        "holder_distribution",
+        "price_volume",
+        "time_factors"
+      ]
+    },
+    "inference_time": "100ms",
+    "zkml_proof_time": "700ms"
+  },
+  "tags": [
+    "zkml",
+    "zero-knowledge",
+    "verifiable-ai",
+    "defi",
+    "security",
+    "smart-contracts",
+    "rug-pull-detection",
+    "fraud-detection",
+    "blockchain-analysis",
+    "ethereum",
+    "base",
+    "solana",
+    "trustless",
+    "cryptographic-proofs",
+    "jolt-atlas",
+    "machine-learning",
+    "ai-security"
+  ],
+  "documentation": {
+    "website": "https://rugdetector.ai",
+    "github": "https://github.com/hshadab/rugdetector",
+    "how_it_works": "https://rugdetector.ai/docs/HOW_IT_WORKS.md",
+    "zkml_explained": "https://rugdetector.ai/docs/ZKML_EXPLAINED.md"
+  },
+  "sla": {
+    "uptime": "99.9%",
+    "response_time": "3s_average",
+    "rate_limit": "30_requests_per_minute"
+  },
+  "created_at": "2025-01-15T00:00:00Z",
+  "updated_at": "2025-10-27T00:00:00Z"
+}
